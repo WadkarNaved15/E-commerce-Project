@@ -65,45 +65,62 @@ export default function LoginPage() {
   };
 
   const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setRegisterNameError('');
-    setRegisterEmailError('');
-    setRegisterPasswordError('');
+  e.preventDefault();
+  setRegisterNameError('');
+  setRegisterEmailError('');
+  setRegisterPasswordError('');
 
-    if (!registerName) {
-      setRegisterNameError('Name is required');
-      return;
-    }
-    if (!registerEmail) {
-      setRegisterEmailError('Email is required');
-      return;
-    }
-    if (!validateEmail(registerEmail)) {
-      setRegisterEmailError('Invalid email format');
-      return;
-    }
-    if (!registerPassword) {
-      setRegisterPasswordError('Password is required');
-      return;
-    }
-    if (registerPassword.length < 6) {
-      setRegisterPasswordError('Password must be at least 6 characters');
-      return;
+  if (!registerName) {
+    setRegisterNameError('Name is required');
+    return;
+  }
+  if (!registerEmail) {
+    setRegisterEmailError('Email is required');
+    return;
+  }
+  if (!validateEmail(registerEmail)) {
+    setRegisterEmailError('Invalid email format');
+    return;
+  }
+  if (!registerPassword) {
+    setRegisterPasswordError('Password is required');
+    return;
+  }
+  if (registerPassword.length < 6) {
+    setRegisterPasswordError('Password must be at least 6 characters');
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    // Directly call your App Router API here
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: registerName,
+        email: registerEmail,
+        password: registerPassword,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Registration failed');
     }
 
-    setIsLoading(true);
+    toast.success('Account created successfully!');
+    router.push('/');
+  } catch (error: any) {
+    toast.error(error.message || 'Registration failed');
+    setRegisterEmailError(error.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
-    try {
-      await register(registerEmail, registerPassword, registerName);
-      toast.success('Account created successfully!');
-      router.push('/');
-    } catch (error: any) {
-      toast.error(error.message || 'Registration failed');
-      setRegisterEmailError(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex">
