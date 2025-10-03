@@ -8,6 +8,8 @@ import { ChevronLeft, ChevronRight, ArrowRight, Quote } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import { products } from '@/lib/products';
 
+console.log("API", process.env.NEXT_PUBLIC_API_URL);
+
 const heroSlides = [
   {
     image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1920&q=80',

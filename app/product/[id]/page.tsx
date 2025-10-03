@@ -25,7 +25,7 @@ export default function ProductDetailPage() {
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
-  const [selectedColor, setSelectedColor] = useState('');
+  // const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -48,21 +48,21 @@ export default function ProductDetailPage() {
   if (!selectedSize && product.sizes.length > 0) {
     setSelectedSize(product.sizes[0]);
   }
-  if (!selectedColor && product.colors.length > 0) {
-    setSelectedColor(product.colors[0].name);
-  }
+  // if (!selectedColor && product.colors.length > 0) {
+  //   setSelectedColor(product.colors[0].name);
+  // }
 
   const relatedProducts = products
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
   const handleAddToCart = () => {
-    if (!selectedSize || !selectedColor) {
+    if (!selectedSize) {
       toast.error('Please select size and color');
       return;
     }
 
-    addToCart(product, quantity, selectedSize, selectedColor);
+    addToCart(product, quantity, selectedSize);
     toast.success(`${product.name} added to cart!`);
 
     confetti({
@@ -201,7 +201,7 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              <div>
+              {/* <div>
                 <h3 className="font-semibold mb-3">Select Color</h3>
                 <div className="flex flex-wrap gap-3">
                   {product.colors.map((color) => (
@@ -222,7 +222,7 @@ export default function ProductDetailPage() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </div> */}
 
               <div>
                 <h3 className="font-semibold mb-3">Quantity</h3>
