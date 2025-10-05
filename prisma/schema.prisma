@@ -42,4 +42,6 @@ enum Category {
   Dresses
   Accessories
   Shoes
+  Tops
+  Bottoms
 }

@@ -6,7 +6,8 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ArrowRight, Quote } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
-import { products } from '@/lib/products';
+import type {Product} from "@/lib/products"
+
 
 console.log("API", process.env.NEXT_PUBLIC_API_URL);
 
@@ -49,20 +50,50 @@ const testimonials = [
 export default function HomePage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+   const [products, setProducts] = useState<Product[]>([]);
+     const [loading, setLoading] = useState(true);
+     const [error, setError] = useState(false);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
+     useEffect(() => {
+         async function fetchData() {
+           try {
+             // 1. Fetch the single product and all products concurrently
+             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+             console.log("response",response)
+     
+             if (response.status === 404) {
+               setError(true);
+               setLoading(false);
+               return;
+             }
+     
+             if (!response.ok) {
+               throw new Error('Failed to fetch data');
+             }
+     
+              const allProducts: Product[] = await response.json();
+              setProducts(allProducts);
+    
+     
+           } catch (e) {
+             console.error(e);
+             setError(true);
+           } finally {
+             setLoading(false);
+           }
+         }
+     
+         fetchData();
+      const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
+     const timer2 = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 4000);
-    return () => clearInterval(timer);
-  }, []);
+    return () =>{ clearInterval(timer)
+      clearInterval(timer2)};
+       }, []);
+
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);

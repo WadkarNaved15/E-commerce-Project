@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Plus, Minus, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { toast } from 'sonner';
-import { getProductById, products } from '@/lib/products';
 import { useCart } from '@/contexts/CartContext';
 import ProductCard from '@/components/ProductCard';
 import {
@@ -15,19 +14,72 @@ import {
   DialogContent,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import type {Product} from "@/lib/products"
 
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
   const { addToCart } = useCart();
   const productId = parseInt(params.id as string);
-  const product = getProductById(productId);
+
+   // Use state to manage the product data
+  const [product, setProduct] = useState<Product | null>(null);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   // const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+
+ // --- Data Fetching Effect ---
+  useEffect(() => {
+    async function fetchData() {
+      if (!productId) return;
+
+      try {
+        // 1. Fetch the single product and all products concurrently
+        const [productRes, allProductsRes] = await Promise.all([
+          fetch(`/api/products/${productId}`),
+          fetch('/api/products'),
+        ]);
+
+        if (productRes.status === 404) {
+          setError(true);
+          setLoading(false);
+          return;
+        }
+
+        if (!productRes.ok || !allProductsRes.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const productData: Product = await productRes.json();
+        const allProductsData: Product[] = await allProductsRes.json();
+
+        setProduct(productData);
+        setAllProducts(allProductsData);
+        
+        // Initialize state based on fetched product data
+        if (productData.sizes.length > 0) {
+           setSelectedSize(productData.sizes[0]);
+        }
+
+      } catch (e) {
+        console.error(e);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, [productId]);
+
+  console.log("product",product)
+  console.log("All products",allProducts)
 
   if (!product) {
     return (
@@ -52,7 +104,7 @@ export default function ProductDetailPage() {
   //   setSelectedColor(product.colors[0].name);
   // }
 
-  const relatedProducts = products
+  const relatedProducts = allProducts
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 

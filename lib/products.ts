@@ -7,7 +7,6 @@ export interface Product {
   features: string[];
   images: string[];
   sizes: string[];
-  colors: { name: string; hex: string }[];
   rating: number;
   popularity: number;
 }
@@ -31,11 +30,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=800&q=80'
     ],
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    colors: [
-      { name: 'Navy', hex: '#001F3F' },
-      { name: 'Gold', hex: '#D4AF37' },
-      { name: 'Black', hex: '#000000' }
-    ],
     rating: 4.8,
     popularity: 95
   },
@@ -56,10 +50,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=800&q=80'
     ],
     sizes: ['One Size'],
-    colors: [
-      { name: 'Gold', hex: '#D4AF37' },
-      { name: 'Silver', hex: '#C0C0C0' }
-    ],
     rating: 4.9,
     popularity: 88
   },
@@ -80,10 +70,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1584274292540-e79f53877dfb?w=800&q=80'
     ],
     sizes: ['5', '6', '7', '8', '9', '10'],
-    colors: [
-      { name: 'Navy', hex: '#001F3F' },
-      { name: 'Burgundy', hex: '#800020' }
-    ],
     rating: 4.7,
     popularity: 82
   },
@@ -104,11 +90,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=800&q=80'
     ],
     sizes: ['XS', 'S', 'M', 'L'],
-    colors: [
-      { name: 'Camel', hex: '#C19A6B' },
-      { name: 'Black', hex: '#000000' },
-      { name: 'Ivory', hex: '#FFFFF0' }
-    ],
     rating: 4.9,
     popularity: 92
   },
@@ -129,10 +110,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80'
     ],
     sizes: ['One Size'],
-    colors: [
-      { name: 'White Pearl', hex: '#FFFFFF' },
-      { name: 'Black Pearl', hex: '#000000' }
-    ],
     rating: 5.0,
     popularity: 90
   },
@@ -153,10 +130,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1542834759-926f3e2a8d0e?w=800&q=80'
     ],
     sizes: ['5', '6', '7', '8', '9', '10', '11'],
-    colors: [
-      { name: 'Black', hex: '#000000' },
-      { name: 'Cognac', hex: '#A0522D' }
-    ],
     rating: 4.8,
     popularity: 85
   },
@@ -177,11 +150,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=800&q=80'
     ],
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
-    colors: [
-      { name: 'Blush', hex: '#FFB6C1' },
-      { name: 'Emerald', hex: '#50C878' },
-      { name: 'Navy', hex: '#001F3F' }
-    ],
     rating: 4.6,
     popularity: 78
   },
@@ -202,11 +170,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1596524430615-b46475ddff6e?w=800&q=80'
     ],
     sizes: ['One Size'],
-    colors: [
-      { name: 'Coral', hex: '#FF7F50' },
-      { name: 'Sapphire', hex: '#0F52BA' },
-      { name: 'Ivory', hex: '#FFFFF0' }
-    ],
     rating: 4.7,
     popularity: 75
   },
@@ -227,10 +190,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&q=80'
     ],
     sizes: ['5', '6', '7', '8', '9', '10'],
-    colors: [
-      { name: 'Champagne', hex: '#F7E7CE' },
-      { name: 'Black', hex: '#000000' }
-    ],
     rating: 4.5,
     popularity: 70
   },
@@ -251,10 +210,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=800&q=80'
     ],
     sizes: ['XS', 'S', 'M', 'L'],
-    colors: [
-      { name: 'Champagne', hex: '#F7E7CE' },
-      { name: 'Black', hex: '#000000' }
-    ],
     rating: 5.0,
     popularity: 98
   },
@@ -275,10 +230,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=800&q=80'
     ],
     sizes: ['One Size'],
-    colors: [
-      { name: 'Clear', hex: '#FFFFFF' },
-      { name: 'Rose Gold', hex: '#B76E79' }
-    ],
     rating: 4.8,
     popularity: 80
   },
@@ -299,10 +250,6 @@ export const products: Product[] = [
       'https://images.unsplash.com/photo-1584274292540-e79f53877dfb?w=800&q=80'
     ],
     sizes: ['5', '6', '7', '8', '9', '10'],
-    colors: [
-      { name: 'Black', hex: '#000000' },
-      { name: 'Red', hex: '#DC143C' }
-    ],
     rating: 4.9,
     popularity: 87
   }
