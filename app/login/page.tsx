@@ -33,36 +33,59 @@ export default function LoginPage() {
   };
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoginEmailError('');
-    setLoginPasswordError('');
+  e.preventDefault();
 
-    if (!loginEmail) {
-      setLoginEmailError('Email is required');
-      return;
-    }
-    if (!validateEmail(loginEmail)) {
-      setLoginEmailError('Invalid email format');
-      return;
-    }
-    if (!loginPassword) {
-      setLoginPasswordError('Password is required');
-      return;
+  setLoginEmailError('');
+  setLoginPasswordError('');
+
+  if (!loginEmail) {
+    setLoginEmailError('Email is required');
+    return;
+  }
+  if (!validateEmail(loginEmail)) {
+    setLoginEmailError('Invalid email format');
+    return;
+  }
+  if (!loginPassword) {
+    setLoginPasswordError('Password is required');
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: loginEmail,
+        password: loginPassword,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Login failed');
     }
 
-    setIsLoading(true);
-
-    try {
-      await login(loginEmail, loginPassword);
-      toast.success('Welcome back!');
+    toast.success('Login successful!');
+    
+    // Optionally redirect based on role
+    if (data.role === 'admin') {
+      router.push('/admin/dashboard');
+    } else {
       router.push('/');
-    } catch (error: any) {
-      toast.error(error.message || 'Login failed');
-      setLoginPasswordError(error.message);
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+  } catch (error: any) {
+    toast.error(error.message || 'Login failed');
+    setLoginPasswordError(error.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleRegister = async (e: React.FormEvent) => {
   e.preventDefault();

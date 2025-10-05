@@ -62,11 +62,15 @@ function AccountPageContent() {
     setIsSaving(false);
   };
 
-  const handleLogout = () => {
-    logout();
-    toast.success('Logged out successfully');
-    router.push('/');
-  };
+  const handleLogout = async () => {
+  try {
+      logout(); // AuthContext handles everything
+      toast.success('Logged out successfully');
+  } catch (error: any) {
+    toast.error(error.message || 'Logout failed');
+  }
+};
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
