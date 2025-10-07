@@ -30,7 +30,7 @@ export default function CartPage() {
   };
 
   const handleRemove = (productId: number, size: string, color: string) => {
-    removeFromCart(productId, size, color);
+    removeFromCart(productId, size);
     toast.success('Item removed from cart');
   };
 
@@ -74,7 +74,7 @@ export default function CartPage() {
           <div className="space-y-4">
             {items.map((item, index) => (
               <motion.div
-                key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`}
+                key={`${item.product.id}-${item.selectedSize}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -99,16 +99,13 @@ export default function CartPage() {
                       >
                         {item.product.name}
                       </Link>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Size: {item.selectedSize} | Color: {item.selectedColor}
-                      </p>
+
                     </div>
                     <button
                       onClick={() =>
                         handleRemove(
                           item.product.id,
-                          item.selectedSize,
-                          item.selectedColor
+                          item.selectedSize
                         )
                       }
                       className="text-red-500 hover:text-red-700 transition-colors"
@@ -127,7 +124,6 @@ export default function CartPage() {
                           updateQuantity(
                             item.product.id,
                             item.selectedSize,
-                            item.selectedColor,
                             item.quantity - 1
                           )
                         }
@@ -144,7 +140,6 @@ export default function CartPage() {
                           updateQuantity(
                             item.product.id,
                             item.selectedSize,
-                            item.selectedColor,
                             item.quantity + 1
                           )
                         }

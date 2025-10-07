@@ -5,8 +5,11 @@ import { motion } from 'framer-motion';
 import { Plus, X, Upload, Check, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
-const categories = ['Dresses', 'Tops', 'Bottoms', 'Outwear', 'Accessories'];
-const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const categories = ['Earings', 'Rings', 'Necklace'];
+
+const ringSizes = ['6','7','8','9','10','11','12'];
+const oneSize = ['One Size'];
+
 
 export default function ProductForm() {
   const [formData, setFormData] = useState({
@@ -400,7 +403,7 @@ export default function ProductForm() {
                 Available Sizes *
               </label>
               <div className="flex flex-wrap gap-2">
-                {sizes.map(size => (
+                {(formData.Category === 'Rings' ? ringSizes : oneSize).map(size => (
                   <button
                     key={size}
                     type="button"
