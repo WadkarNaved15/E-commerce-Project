@@ -21,7 +21,7 @@ export default function ProductCard({ product, delay = 0 }: ProductCardProps) {
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
-    addToCart(product, 1, product.sizes[0], product.colors[0].name);
+    addToCart(product, 1, product.sizes[0]);
     toast.success(`${product.name} added to cart!`);
 
     confetti({

@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Filter, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
-import { products as allProducts, filterProducts, sortProducts } from '@/lib/products';
+import type { Product } from '@/lib/products';
+import { sortProducts } from '@/lib/products';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -23,17 +24,62 @@ export default function ShopPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [displayCount, setDisplayCount] = useState(12);
 
-  const availableSizes = ['XS', 'S', 'M', 'L', 'XL', '5', '6', '7', '8', '9', '10'];
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
+  const categorySizes: Record<string, string[]> = {
+  Rings: ['6', '7', '8', '9', '10', '11', '12'],
+  Earings: ['One Size'],
+  Necklace: ['One Size'],
+};
+
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+
+        if (!response.ok) throw new Error('Failed to fetch products');
+
+        const allProducts: Product[] = await response.json();
+        setProducts(allProducts);
+      } catch (e) {
+        console.error(e);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const availableSizes = useMemo(() => {
+  if (selectedCategory === 'All') {
+    // combine all sizes
+    return [...new Set(Object.values(categorySizes).flat())];
+  }
+  return categorySizes[selectedCategory] || [];
+}, [selectedCategory]);
+
+
+  // ✅ Filter using fetched products
   const filteredAndSortedProducts = useMemo(() => {
-    const filtered = filterProducts(
-      selectedCategory === 'All' ? undefined : selectedCategory,
-      priceRange[0],
-      priceRange[1],
-      selectedSizes.length > 0 ? selectedSizes : undefined
-    );
+    let filtered = products.filter((product) => {
+      if (selectedCategory !== 'All' && product.category !== selectedCategory)
+        return false;
+      if (product.price < priceRange[0] || product.price > priceRange[1])
+        return false;
+      if (selectedSizes.length > 0) {
+        const hasSize = product.sizes.some((s) => selectedSizes.includes(s));
+        if (!hasSize) return false;
+      }
+      return true;
+    });
+
     return sortProducts(filtered, sortBy);
-  }, [selectedCategory, priceRange, selectedSizes, sortBy]);
+  }, [products, selectedCategory, priceRange, selectedSizes, sortBy]);
 
   const displayedProducts = filteredAndSortedProducts.slice(0, displayCount);
 
@@ -66,19 +112,23 @@ export default function ShopPage() {
       <div>
         <h4 className="font-medium mb-4">Category</h4>
         <div className="space-y-2">
-          {['All', 'Dresses', 'Accessories', 'Shoes'].map((category) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`block w-full text-left px-4 py-2 rounded-lg transition-colors ${
-                selectedCategory === category
-                  ? 'bg-luxury-navy text-white'
-                  : 'hover:bg-luxury-gray'
-              }`}
-            >
-              {category}
-            </button>
-          ))}
+          {['All', 'Earings', 'Rings', 'Necklace'].map((category) => (
+  <button
+    key={category}
+    onClick={() => {
+      setSelectedCategory(category);
+      setSelectedSizes([]); // reset selected sizes when changing category
+    }}
+    className={`block w-full text-left px-4 py-2 rounded-lg transition-colors ${
+      selectedCategory === category
+        ? 'bg-luxury-navy text-white'
+        : 'hover:bg-luxury-gray'
+    }`}
+  >
+    {category}
+  </button>
+))}
+
         </div>
       </div>
 
@@ -96,25 +146,34 @@ export default function ShopPage() {
         />
       </div>
 
-      <div>
-        <h4 className="font-medium mb-4">Size</h4>
-        <div className="grid grid-cols-3 gap-2">
-          {availableSizes.map((size) => (
-            <label
-              key={size}
-              className="flex items-center space-x-2 cursor-pointer"
-            >
-              <Checkbox
-                checked={selectedSizes.includes(size)}
-                onCheckedChange={() => handleSizeToggle(size)}
-              />
-              <span className="text-sm">{size}</span>
-            </label>
-          ))}
-        </div>
-      </div>
+      {availableSizes.length > 1 && (
+  <div>
+    <h4 className="font-medium mb-4">Size</h4>
+    <div className="grid grid-cols-3 gap-2">
+      {availableSizes.map((size) => (
+        <label key={size} className="flex items-center space-x-2 cursor-pointer">
+          <Checkbox
+            checked={selectedSizes.includes(size)}
+            onCheckedChange={() => handleSizeToggle(size)}
+          />
+          <span className="text-sm">{size}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+)}
     </div>
   );
+
+  if (loading)
+    return <div className="text-center py-12 text-gray-600">Loading products...</div>;
+
+  if (error)
+    return (
+      <div className="text-center py-12 text-red-500">
+        Failed to load products. Please try again later.
+      </div>
+    );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

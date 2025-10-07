@@ -32,7 +32,7 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-20">
             <Link href="/" className="flex items-center">
               <h1 className="text-2xl md:text-3xl font-serif font-bold text-luxury-navy">
-                Elegance Couture
+                Heeriya
               </h1>
             </Link>
 
