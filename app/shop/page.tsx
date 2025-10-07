@@ -38,7 +38,7 @@ export default function ShopPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+        const response = await fetch("/api/products");
 
         if (!response.ok) throw new Error('Failed to fetch products');
 

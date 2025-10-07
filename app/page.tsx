@@ -9,7 +9,6 @@ import ProductCard from '@/components/ProductCard';
 import type {Product} from "@/lib/products"
 
 
-console.log("API", process.env.NEXT_PUBLIC_API_URL);
 
 const heroSlides = [
   {
@@ -58,7 +57,7 @@ export default function HomePage() {
          async function fetchData() {
            try {
              // 1. Fetch the single product and all products concurrently
-             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`);
+             const response = await fetch(`api/products`);
              console.log("response",response)
      
              if (response.status === 404) {

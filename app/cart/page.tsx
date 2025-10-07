@@ -29,7 +29,7 @@ export default function CartPage() {
     }
   };
 
-  const handleRemove = (productId: number, size: string, color: string) => {
+  const handleRemove = (productId: number, size: string) => {
     removeFromCart(productId, size);
     toast.success('Item removed from cart');
   };

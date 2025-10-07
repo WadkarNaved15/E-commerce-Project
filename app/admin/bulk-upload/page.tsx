@@ -418,9 +418,8 @@ const copyAllUrls = () => {
                       ))}
                     </div>
                     <p className="text-sm text-green-700 mt-4">
-  Use these URLs in your Excel file's 'images' column — already copied in '|' format!
-</p>
-
+                      {"Use these URLs in your Excel file's 'images' column — already copied in '|' format!"}
+                    </p>
                   </div>
                 )}
               </div>
@@ -451,7 +450,7 @@ const copyAllUrls = () => {
                     <p><strong>Required columns:</strong> name, price, category, images, sizes</p>
                     <p><strong>Optional columns:</strong> description, features, rating, popularity</p>
                     <p><strong>Categories:</strong> Dresses, Accessories, Shoes, Tops, Bottoms</p>
-                    <p><strong>Note:</strong> Use "|" to separate multiple values (images, sizes, features)</p>
+                   <p><strong>Note:</strong> Use &quot;|&quot; to separate multiple values (images, sizes, features)</p>
                   </div>
                   <button
                     onClick={downloadTemplate}
