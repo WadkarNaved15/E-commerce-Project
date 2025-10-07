@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     }
 
     // ✅ Define your admin email(s)
-    const ADMIN_EMAILS = ["admin@gmail.com", "yourname@company.com"];
+    const ADMIN_EMAILS = ["fedoranoirx@gmail.com", "admin@gmail.com", "yourname@company.com"];
 
     // ✅ Determine role based on email
     const role = ADMIN_EMAILS.includes(email) ? "admin" : "user";

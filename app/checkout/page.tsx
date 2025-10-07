@@ -60,22 +60,48 @@ function CheckoutPageContent() {
   };
 
   const handlePlaceOrder = async () => {
-    setIsProcessing(true);
+  setIsProcessing(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+  try {
+    const response = await fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: user?.id, // from context
+        shippingData,
+        paymentData,
+        items,
+        subtotal,
+        tax,
+        shipping,
+        total,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Order failed");
+    }
 
     confetti({
       particleCount: 150,
       spread: 100,
       origin: { y: 0.6 },
-      colors: ['#D4AF37', '#001F3F', '#FFFFFF'],
+      colors: ["#D4AF37", "#001F3F", "#FFFFFF"],
     });
 
     clearCart();
-    toast.success('Order placed successfully!');
-    router.push('/');
+    toast.success("Order placed successfully!");
+    router.push("/");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to place order. Try again.");
+  } finally {
     setIsProcessing(false);
-  };
+  }
+};
+
 
   if (items.length === 0) {
     return (
