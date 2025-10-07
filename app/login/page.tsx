@@ -70,13 +70,7 @@ export default function LoginPage() {
     }
 
     toast.success('Login successful!');
-    
-    // Optionally redirect based on role
-    if (data.role === 'admin') {
-      router.push('/admin/dashboard');
-    } else {
-      router.push('/');
-    }
+    router.push('/')
 
   } catch (error: any) {
     toast.error(error.message || 'Login failed');

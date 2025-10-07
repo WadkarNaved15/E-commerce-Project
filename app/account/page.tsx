@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { User, Package, Heart, LogOut } from 'lucide-react';
+import { Plus, User, Package, Heart, LogOut } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -20,6 +21,7 @@ function AccountPageContent() {
   const [zip, setZip] = useState(user?.zip || '');
   const [country, setCountry] = useState(user?.country || 'United States');
   const [isSaving, setIsSaving] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
 
   const mockOrders = [
     {
@@ -44,7 +46,21 @@ function AccountPageContent() {
       items: 3,
     },
   ];
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/me", { credentials: "include" });
+        const data = await res.json();
+        if (data?.user?.role) {
+          setRole(data.user.role);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
 
+    fetchUser();
+  }, []);
   const handleSaveProfile = async () => {
     setIsSaving(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -63,13 +79,13 @@ function AccountPageContent() {
   };
 
   const handleLogout = async () => {
-  try {
+    try {
       logout(); // AuthContext handles everything
       toast.success('Logged out successfully');
-  } catch (error: any) {
-    toast.error(error.message || 'Logout failed');
-  }
-};
+    } catch (error: any) {
+      toast.error(error.message || 'Logout failed');
+    }
+  };
 
 
   const getStatusColor = (status: string) => {
@@ -87,11 +103,30 @@ function AccountPageContent() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-4xl font-serif font-bold text-luxury-navy">My Account</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 space-y-4 sm:space-y-0">
+        {/* Title */}
+        <h1 className="text-4xl font-serif font-bold text-luxury-navy order-1">
+          My Account
+        </h1>
+
+        {/* Add Product Button (Make this order-2 on small screens) */}
+        {role === 'admin' && (
+          <Link href="/admin/add-product">
+            <button
+              className="flex items-center justify-center space-x-2 bg-luxury-gold text-white px-4 py-2 rounded-lg font-semibold hover:bg-opacity-90 transition-colors w-full sm:w-auto order-2 sm:order-2"
+            // Changed order-3 to order-2
+            >
+              <Plus size={20} />
+              <span>Add Product</span>
+            </button>
+          </Link>
+        )}
+
+        {/* Logout Button (Make this order-3 on small screens) */}
         <button
           onClick={handleLogout}
-          className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors"
+          className="flex items-center space-x-2 text-red-600 hover:text-red-700 transition-colors self-start sm:self-auto order-3 sm:order-3"
+        // Changed order-2 to order-3
         >
           <LogOut size={20} />
           <span>Logout</span>
