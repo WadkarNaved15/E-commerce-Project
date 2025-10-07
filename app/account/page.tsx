@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Plus, User, Package, Heart, LogOut } from 'lucide-react';
@@ -11,7 +11,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 function AccountPageContent() {
-  const { user, updateProfile, logout } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
 
   const [name, setName] = useState(user?.name || '');
@@ -22,30 +22,25 @@ function AccountPageContent() {
   const [country, setCountry] = useState(user?.country || 'United States');
   const [isSaving, setIsSaving] = useState(false);
   const [role, setRole] = useState<string | null>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
-  const mockOrders = [
-    {
-      id: '10001',
-      date: '2025-09-15',
-      status: 'Delivered',
-      total: 1230,
-      items: 2,
-    },
-    {
-      id: '10002',
-      date: '2025-09-28',
-      status: 'In Transit',
-      total: 850,
-      items: 1,
-    },
-    {
-      id: '10003',
-      date: '2025-10-01',
-      status: 'Processing',
-      total: 1450,
-      items: 3,
-    },
-  ];
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch("/api/getorders", { credentials: "include" });
+        const data = await res.json();
+        setOrders(data.orders || []);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        toast.error("Failed to load your orders.");
+      } finally {
+        setLoadingOrders(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -61,22 +56,7 @@ function AccountPageContent() {
 
     fetchUser();
   }, []);
-  const handleSaveProfile = async () => {
-    setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    updateProfile({
-      name,
-      email,
-      address,
-      city,
-      zip,
-      country,
-    });
-
-    toast.success('Profile updated successfully');
-    setIsSaving(false);
-  };
 
   const handleLogout = async () => {
     try {
@@ -134,20 +114,6 @@ function AccountPageContent() {
       </div>
 
       <Tabs defaultValue="orders" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 mb-8">
-          <TabsTrigger value="orders" className="flex items-center space-x-2">
-            <Package size={16} />
-            <span>Orders</span>
-          </TabsTrigger>
-          <TabsTrigger value="profile" className="flex items-center space-x-2">
-            <User size={16} />
-            <span>Profile</span>
-          </TabsTrigger>
-          <TabsTrigger value="wishlist" className="flex items-center space-x-2">
-            <Heart size={16} />
-            <span>Wishlist</span>
-          </TabsTrigger>
-        </TabsList>
 
         <TabsContent value="orders">
           <motion.div
@@ -178,148 +144,55 @@ function AccountPageContent() {
                       <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
                         Total
                       </th>
+                       <th className="px-4 py-3 text-right text-sm font-semibold text-gray-700">
+                        Name
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
-                    {mockOrders.map((order) => (
-                      <tr
-                        key={order.id}
-                        className="hover:bg-luxury-gray transition-colors cursor-pointer"
-                      >
-                        <td className="px-4 py-4 text-sm font-medium text-luxury-navy">
-                          #{order.id}
-                        </td>
-                        <td className="px-4 py-4 text-sm text-gray-600">
-                          {new Date(order.date).toLocaleDateString()}
-                        </td>
-                        <td className="px-4 py-4">
-                          <span
-                            className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                              order.status
-                            )}`}
-                          >
-                            {order.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-4 text-sm text-gray-600">
-                          {order.items} item{order.items > 1 ? 's' : ''}
-                        </td>
-                        <td className="px-4 py-4 text-sm font-semibold text-luxury-navy text-right">
-                          ${order.total.toLocaleString()}
+
+                    {loadingOrders ? (
+                      <tr>
+                        <td colSpan={7} className="text-center py-6 text-gray-500">
+                          Loading your orders...
                         </td>
                       </tr>
-                    ))}
+                    ) : orders.length === 0 ? (
+                      <tr>
+                        <td colSpan={7} className="text-center py-6 text-gray-500">
+                          No orders found.
+                        </td>
+                      </tr>
+                    ) : (
+                      orders.map((order) => (
+                        <tr key={order.id} className="hover:bg-luxury-gray transition-colors cursor-pointer">
+                          <td className="px-4 py-4 text-sm font-medium text-luxury-navy">#{order.id}</td>
+                          <td className="px-4 py-4 text-sm text-gray-600">
+                            {new Date(order.createdAt).toLocaleDateString()}
+                          </td>
+                          <td className="px-4 py-4">
+                            <span
+                              className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
+                                order.status || "Processing"
+                              )}`}
+                            >
+                              {order.status || "Processing"}
+                            </span>
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-600">
+                            {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                          </td>
+                          <td className="px-4 py-4 text-sm font-semibold text-luxury-navy text-right">
+                            ${order.totalAmount.toLocaleString()}
+                          </td>
+                          <td className="px-4 py-4 text-sm text-gray-600 text-right">{order.shippingName}</td>
+                        </tr>
+                      ))
+                    )}
+
                   </tbody>
                 </table>
               </div>
-            </div>
-          </motion.div>
-        </TabsContent>
-
-        <TabsContent value="profile">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-lg shadow-md p-6"
-          >
-            <h2 className="text-2xl font-serif font-bold text-luxury-navy mb-6">
-              Profile Information
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Full Name</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-luxury-gold transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-luxury-gold transition-colors"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-2">Address</label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="Street address"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-luxury-gold transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">City</label>
-                <input
-                  type="text"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-luxury-gold transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-2">ZIP Code</label>
-                <input
-                  type="text"
-                  value={zip}
-                  onChange={(e) => setZip(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-luxury-gold transition-colors"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium mb-2">Country</label>
-                <select
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-luxury-gold transition-colors"
-                >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>United Kingdom</option>
-                  <option>France</option>
-                  <option>Italy</option>
-                </select>
-              </div>
-            </div>
-            <div className="mt-8">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleSaveProfile}
-                disabled={isSaving}
-                className="bg-luxury-gold text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSaving ? (
-                  <span className="inline-block animate-spin">⏳</span>
-                ) : (
-                  'Save Changes'
-                )}
-              </motion.button>
-            </div>
-          </motion.div>
-        </TabsContent>
-
-        <TabsContent value="wishlist">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-lg shadow-md p-6"
-          >
-            <h2 className="text-2xl font-serif font-bold text-luxury-navy mb-6">
-              My Wishlist
-            </h2>
-            <div className="text-center py-12">
-              <Heart className="mx-auto text-gray-300 mb-4" size={80} />
-              <p className="text-gray-600">Your wishlist is empty</p>
-              <p className="text-sm text-gray-500 mt-2">
-                Start adding items you love to your wishlist
-              </p>
             </div>
           </motion.div>
         </TabsContent>
