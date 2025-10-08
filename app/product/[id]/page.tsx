@@ -39,6 +39,7 @@ export default function ProductDetailPage() {
     async function fetchData() {
       if (!productId) return;
 
+      setLoading(true);
       try {
         // 1. Fetch the single product and all products concurrently
         const [productRes, allProductsRes] = await Promise.all([
@@ -81,7 +82,20 @@ export default function ProductDetailPage() {
   console.log("product",product)
   console.log("All products",allProducts)
 
-  if (!product) {
+  if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="text-center">
+        {/* Loader */}
+        <div className="w-12 h-12 border-4 border-t-luxury-gold border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-luxury-gold hover:underline">Loading product...</p>
+      </div>
+    </div>
+  );
+}
+
+
+  if (!product ) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -92,6 +106,17 @@ export default function ProductDetailPage() {
           >
             Return to shop
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="loader mb-4"></div>
+          <p>Loading product...</p>
         </div>
       </div>
     );

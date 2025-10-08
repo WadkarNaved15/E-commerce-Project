@@ -165,8 +165,18 @@ export default function ShopPage() {
     </div>
   );
 
-  if (loading)
-    return <div className="text-center py-12 text-gray-600">Loading products...</div>;
+  if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="text-center">
+        {/* Loader */}
+        <div className="w-12 h-12 border-4 border-t-luxury-gold border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
+        <p className="text-luxury-gold hover:underline">Loading product...</p>
+      </div>
+    </div>
+  );
+}
+
 
   if (error)
     return (
