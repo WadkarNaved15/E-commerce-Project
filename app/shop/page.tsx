@@ -22,7 +22,7 @@ const categorySizes: Record<string, string[]> = {
   Rings: ['6', '7', '8', '9', '10', '11', '12'],
   Earings: ['One Size'],
   Necklace: ['One Size'],
-  Bangles: ['2.4', '2.6', '2.8', 'Free Size'],
+  Bangles: ['2.2','2.4', '2.6', '2.8','3.0', 'Free Size'],
 };
 
 
@@ -112,7 +112,7 @@ export default function ShopPage() {
       <div>
         <h4 className="font-medium mb-4">Category</h4>
         <div className="space-y-2">
-          {['All', 'Earings', 'Rings', 'Necklace'].map((category) => (
+          {['All', 'Earings', 'Rings', 'Necklace','Bangles'].map((category) => (
   <button
     key={category}
     onClick={() => {
