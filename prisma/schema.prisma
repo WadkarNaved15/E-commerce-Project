@@ -15,14 +15,14 @@ model User {
   password  String
   createdAt DateTime @default(now())
   role      String   @default("user")
-  orders    Order[] // 👈 back relation to Order
+  orders    Order[]
 }
 
 model Product {
   id          Int         @id @default(autoincrement())
   name        String
   price       Float
-  category    Category
+  category    Category?   // 👈 optional category
   description String
   features    String[]
   images      String[]
@@ -38,6 +38,7 @@ enum Category {
   Earings
   Rings
   Necklace
+  Bangles
 }
 
 model Order {
