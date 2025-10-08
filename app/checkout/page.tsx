@@ -21,11 +21,11 @@ function CheckoutPageContent() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const [shippingData, setShippingData] = useState({
-    name: user?.name || '',
-    address: user?.address || '',
-    city: user?.city || '',
-    zip: user?.zip || '',
-    country: user?.country || 'India',
+    name: '',
+    address: '',
+    city: '',
+    zip: '',
+    country: '',
   });
 
   const [paymentData, setPaymentData] = useState({
@@ -326,7 +326,7 @@ function CheckoutPageContent() {
                   <div className="space-y-3">
                     {items.map((item) => (
                       <div
-                        key={`${item.product.id}-${item.selectedSize}-${item.selectedColor}`}
+                        key={`${item.product.id}-${item.selectedSize}`}
                         className="flex justify-between text-sm"
                       >
                         <span className="text-gray-700">

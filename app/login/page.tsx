@@ -5,13 +5,11 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User as UserIcon } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, register } = useAuth();
 
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
