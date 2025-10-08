@@ -112,49 +112,71 @@ const copyAllUrls = () => {
 
 
   // Bulk Upload Functions
-  const downloadTemplate = () => {
-    const template = [
-  {
-  name: 'Elegant Gold Earrings',
-  price: 199.99,
-  category: 'Earings', // Must match enum
-  description: 'Beautiful handcrafted gold earrings with intricate design',
-  features: '14K Gold|Handcrafted|Hypoallergenic',
-  images: '/uploads/products/image1.jpg|/uploads/products/image2.jpg',
-  sizes: 'One Size',
-  rating: 4.5,
-  popularity: 120
-},
-  {
-    name: 'Diamond Ring',
-    price: 499.99,
-    category: 'Rings',
-    description: 'Stunning diamond ring with premium quality',
-    features: 'Diamond|Gold|Adjustable size',
-    images: '/uploads/products/image3.jpg|/uploads/products/image4.jpg',
-    sizes: '6|7|8',
-    rating: 4.8,
-    popularity: 200
-  },
-  {
-    name: 'Pearl Necklace',
-    price: 299.99,
-    category: 'Necklace',
-    description: 'Elegant pearl necklace for formal occasions',
-    features: 'Pearls|Handcrafted|Luxury finish',
-    images: '/uploads/products/image5.jpg|/uploads/products/image6.jpg',
-    sizes: 'One Size',
-    rating: 4.7,
-    popularity: 150
-  }
-];
+const downloadTemplate = () => {
+  const template = [
+    {
+      name: 'Elegant Gold Earrings',
+      price: 199.99,
+      category: 'Earings', // Must match enum
+      description: 'Beautiful handcrafted gold earrings with intricate design',
+      features: '14K Gold|Handcrafted|Hypoallergenic',
+      images: '/uploads/products/image1.jpg|/uploads/products/image2.jpg',
+      sizes: 'One Size',
+      rating: 4.5,
+      popularity: 120,
+    },
+    {
+      name: 'Diamond Ring',
+      price: 499.99,
+      category: 'Rings',
+      description: 'Stunning diamond ring with premium quality',
+      features: 'Diamond|Gold|Adjustable size',
+      images: '/uploads/products/image3.jpg|/uploads/products/image4.jpg',
+      sizes: '6|7|8',
+      rating: 4.8,
+      popularity: 200,
+    },
+    {
+      name: 'Pearl Necklace',
+      price: 299.99,
+      category: 'Necklace',
+      description: 'Elegant pearl necklace for formal occasions',
+      features: 'Pearls|Handcrafted|Luxury finish',
+      images: '/uploads/products/image5.jpg|/uploads/products/image6.jpg',
+      sizes: 'One Size',
+      rating: 4.7,
+      popularity: 150,
+    },
+    {
+      name: 'Traditional Gold Bangles',
+      price: 349.99,
+      category: 'Bangles',
+      description: 'Set of traditional gold bangles with intricate carvings',
+      features: '22K Gold|Handcrafted|Set of 2',
+      images: '/uploads/products/image7.jpg|/uploads/products/image8.jpg',
+      sizes: '2.4|2.6|2.8|Free Size',
+      rating: 4.6,
+      popularity: 180,
+    },
+    {
+      name: 'Mystery Jewelry Item',
+      price: 0,
+      category: '', // 👈 Blank category allowed
+      description: 'This product demonstrates a blank category entry',
+      features: 'Feature1|Feature2',
+      images: '/uploads/products/image9.jpg',
+      sizes: '',
+      rating: 0,
+      popularity: 0,
+    },
+  ];
 
+  const ws = XLSX.utils.json_to_sheet(template);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Products');
+  XLSX.writeFile(wb, 'product_template.xlsx');
+};
 
-    const ws = XLSX.utils.json_to_sheet(template);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Products');
-    XLSX.writeFile(wb, 'product_template.xlsx');
-  };
 
   const handleExcelSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
