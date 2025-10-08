@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Filter, X } from 'lucide-react';
+import { Ban, Filter, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import type { Product } from '@/lib/products';
 import { sortProducts } from '@/lib/products';
@@ -16,32 +16,32 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+
+// ✅ Move this outside the component
+const categorySizes: Record<string, string[]> = {
+  Rings: ['6', '7', '8', '9', '10', '11', '12'],
+  Earings: ['One Size'],
+  Necklace: ['One Size'],
+  Bangles: ['2.4', '2.6', '2.8', 'Free Size'],
+};
+
+
 export default function ShopPage() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [priceRange, setPriceRange] = useState<number[]>([0, 2000]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>('popularity');
   const [showFilters, setShowFilters] = useState(false);
   const [displayCount, setDisplayCount] = useState(12);
-
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const categorySizes: Record<string, string[]> = {
-  Rings: ['6', '7', '8', '9', '10', '11', '12'],
-  Earings: ['One Size'],
-  Necklace: ['One Size'],
-};
-
-
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch("/api/products");
-
+        const response = await fetch('/api/products');
         if (!response.ok) throw new Error('Failed to fetch products');
-
         const allProducts: Product[] = await response.json();
         setProducts(allProducts);
       } catch (e) {
@@ -51,17 +51,17 @@ export default function ShopPage() {
         setLoading(false);
       }
     }
-
     fetchData();
   }, []);
 
+
   const availableSizes = useMemo(() => {
-  if (selectedCategory === 'All') {
-    // combine all sizes
-    return [...new Set(Object.values(categorySizes).flat())];
-  }
-  return categorySizes[selectedCategory] || [];
-}, [selectedCategory]);
+    if (selectedCategory === 'All') {
+      return Array.from(new Set(Object.values(categorySizes).flat()));
+    }
+    return categorySizes[selectedCategory] || [];
+  }, [selectedCategory])
+
 
 
   // ✅ Filter using fetched products

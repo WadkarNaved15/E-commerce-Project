@@ -24,14 +24,18 @@ model Product {
   price       Float
   category    Category?   // 👈 optional category
   description String
-  features    String[]
-  images      String[]
-  sizes       String[]
+  features String[] @default([])
+  images   String[] @default([])
+  sizes    String[] @default([])
   rating      Float
   popularity  Int
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   orderItems  OrderItem[]
+
+  @@index([category])
+  @@index([popularity])
+
 }
 
 enum Category {
