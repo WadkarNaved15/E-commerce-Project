@@ -34,7 +34,7 @@ export default function AboutPage() {
       <section className="relative h-[60vh] overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80"
-          alt="About Elegance Couture"
+          alt="About Heeriya"
           fill
           className="object-cover"
           priority
@@ -69,15 +69,14 @@ export default function AboutPage() {
               Founded on Excellence
             </h2>
             <p className="text-gray-700 leading-relaxed mb-4">
-              Elegance Couture was born from a passion for timeless fashion and an
+              Heeriya was born from a passion for timeless fashion and an
               unwavering commitment to quality. Since our founding, we have been
               dedicated to curating collections that embody sophistication and grace.
             </p>
-            <p className="text-gray-700 leading-relaxed mb-4">
-              Each piece in our collection is carefully selected from the world's finest
-              artisans and designers, ensuring that every item meets our exacting
-              standards of craftsmanship and elegance.
-            </p>
+         <p className="text-gray-700 leading-relaxed mb-4">
+            {"Each piece in our collection is meticulously curated from the world's finest artisans and designers, ensuring every item reflects exceptional craftsmanship and timeless elegance."}
+          </p>
+
             <p className="text-gray-700 leading-relaxed">
               We believe that true luxury is not just about what you wear, but how it
               makes you feel. Our mission is to empower individuals to express their

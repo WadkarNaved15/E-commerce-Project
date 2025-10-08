@@ -6,17 +6,19 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
 
-export const metadata: Metadata = {
-  title: 'Elegance Couture - Luxury Fashion',
-  description: 'Discover timeless elegance with our curated collection of luxury fashion pieces. Premium dresses, accessories, and shoes crafted for the discerning individual.',
-  keywords: 'luxury fashion, designer clothing, elegant dresses, high-end accessories, premium shoes',
-  authors: [{ name: 'Elegance Couture' }],
+export const metadata = {
+  title: 'Heeriya - Luxury Jewelry',
+  description: 'Discover Heeriya’s exclusive collection of luxury jewelry. Premium necklaces, earrings, and bangles crafted for elegance and timeless style.',
+  keywords: 'luxury jewelry, designer necklaces, elegant earrings, premium bangles, high-end accessories, Heeriya jewelry',
+  authors: [{ name: 'Heeriya' }],
   openGraph: {
-    title: 'Elegance Couture - Luxury Fashion',
-    description: 'Timeless elegance meets contemporary design',
+    title: 'Heeriya - Timeless Luxury Jewelry',
+    description: 'Experience timeless elegance with Heeriya’s curated collection of necklaces, earrings, and bangles.',
     type: 'website',
+    url: 'https://heeriya.vercel.app', // replace with your website URL
   },
 };
+
 
 export default function RootLayout({
   children,

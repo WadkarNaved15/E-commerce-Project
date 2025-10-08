@@ -22,7 +22,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
-            <h2 className="text-3xl font-serif font-bold mb-4">Elegance Couture</h2>
+            <h2 className="text-3xl font-serif font-bold mb-4">Heeriya</h2>
             <p className="text-gray-300 mb-6 leading-relaxed">
               Timeless elegance meets contemporary design. Discover our curated collection
               of luxury fashion pieces crafted for the discerning individual.
@@ -109,7 +109,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; 2025 Elegance Couture. All rights reserved.</p>
+          <p>&copy; 2025 Heeriya. All rights reserved.</p>
         </div>
       </div>
     </footer>

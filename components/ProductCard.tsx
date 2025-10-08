@@ -95,7 +95,7 @@ export default function ProductCard({ product, delay = 0 }: ProductCardProps) {
           </h3>
           <div className="flex items-center justify-between">
             <p className="text-lg font-semibold text-luxury-navy">
-              ${product.price.toLocaleString()}
+              ₹{product.price.toLocaleString()}
             </p>
             {renderStars()}
           </div>

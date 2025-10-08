@@ -30,7 +30,7 @@ const heroSlides = [
 
 const testimonials = [
   {
-    text: 'Elegance Couture has transformed my wardrobe. Every piece is a work of art.',
+    text: 'Heeriya has elevated my style. Every piece is a work of art.',
     author: 'Sarah Mitchell',
     role: 'Fashion Consultant',
   },

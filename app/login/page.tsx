@@ -142,7 +142,7 @@ export default function LoginPage() {
       <div className="hidden lg:block lg:w-1/2 relative">
         <Image
           src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1920&q=80"
-          alt="Elegance Couture"
+          alt="Heeriya"
           fill
           className="object-cover"
           sizes="50vw"
@@ -156,7 +156,7 @@ export default function LoginPage() {
             className="text-white text-center px-8"
           >
             <h1 className="text-5xl font-serif font-bold mb-4">
-              Elegance Couture
+              Heeriya
             </h1>
             <p className="text-xl">Where timeless elegance meets modern luxury</p>
           </motion.div>
@@ -172,7 +172,7 @@ export default function LoginPage() {
         >
           <div className="mb-8 text-center lg:hidden">
             <h1 className="text-3xl font-serif font-bold text-luxury-navy mb-2">
-              Elegance Couture
+              Heeriya
             </h1>
           </div>
 

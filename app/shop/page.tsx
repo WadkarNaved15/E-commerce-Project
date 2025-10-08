@@ -28,7 +28,7 @@ const categorySizes: Record<string, string[]> = {
 
 export default function ShopPage() {
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [priceRange, setPriceRange] = useState<number[]>([0, 2000]);
+  const [priceRange, setPriceRange] = useState<number[]>([0, 5000]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>('popularity');
   const [showFilters, setShowFilters] = useState(false);
@@ -91,7 +91,7 @@ export default function ShopPage() {
 
   const clearFilters = () => {
     setSelectedCategory('All');
-    setPriceRange([0, 2000]);
+    setPriceRange([0,5000]);
     setSelectedSizes([]);
   };
 
@@ -134,13 +134,13 @@ export default function ShopPage() {
 
       <div>
         <h4 className="font-medium mb-4">
-          Price Range: ${priceRange[0]} - ${priceRange[1]}
+          Price Range: ₹{priceRange[0]} - ₹{priceRange[1]}
         </h4>
         <Slider
           value={priceRange}
           onValueChange={setPriceRange}
           min={0}
-          max={2000}
+          max={5000}
           step={50}
           className="mb-2"
         />
