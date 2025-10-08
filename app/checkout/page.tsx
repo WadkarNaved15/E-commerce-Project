@@ -25,7 +25,7 @@ function CheckoutPageContent() {
     address: user?.address || '',
     city: user?.city || '',
     zip: user?.zip || '',
-    country: user?.country || 'United States',
+    country: user?.country || 'India',
   });
 
   const [paymentData, setPaymentData] = useState({

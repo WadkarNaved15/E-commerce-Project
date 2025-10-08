@@ -13,14 +13,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 function AccountPageContent() {
   const { user, logout } = useAuth();
   const router = useRouter();
-
-  const [name, setName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [address, setAddress] = useState(user?.address || '');
-  const [city, setCity] = useState(user?.city || '');
-  const [zip, setZip] = useState(user?.zip || '');
-  const [country, setCountry] = useState(user?.country || 'United States');
-  const [isSaving, setIsSaving] = useState(false);
   const [role, setRole] = useState<string | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
