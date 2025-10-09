@@ -11,7 +11,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 function AccountPageContent() {
-  const { user, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
@@ -33,22 +33,13 @@ function AccountPageContent() {
 
     fetchOrders();
   }, []);
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/me", { credentials: "include" });
-        const data = await res.json();
-        if (data?.user?.role) {
-          setRole(data.user.role);
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
+ 
+useEffect(() => {
+  console.log("isAuthenticated",isAuthenticated)
+  if (!isAuthenticated) {
+    router.push('/login');
+  }
+}, [isAuthenticated]);
 
   const handleLogout = async () => {
     try {
