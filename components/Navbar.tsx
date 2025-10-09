@@ -13,7 +13,7 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const pathname = usePathname();
   const { getCartCount } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();//Using the userAuth context
   const cartCount = getCartCount();
 
   const navLinks = [
