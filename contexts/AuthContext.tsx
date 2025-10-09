@@ -31,7 +31,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const fetchUser = async () => {
     try {
-      const res = await fetch('/api/me'); // Create this API route to return user info from JWT
+      const res = await fetch('/api/me', {
+      method: 'GET',
+      credentials: 'include', // ✅ ensures cookies are sent on Vercel
+    });
+       // Create this API route to return user info from JWT
       if (!res.ok) {
         setUser(null);
         return;
