@@ -1,7 +1,9 @@
+export const dynamic = "force-dynamic"; 
+
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers"; // <-- built-in helper
+import { cookies } from "next/headers";
 
 export async function GET() {
   try {
