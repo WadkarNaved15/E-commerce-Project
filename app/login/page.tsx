@@ -68,7 +68,7 @@ export default function LoginPage() {
     }
 
     toast.success('Login successful!');
-    router.push('/')
+    router.push('/account')
 
   } catch (error: any) {
     toast.error(error.message || 'Login failed');
