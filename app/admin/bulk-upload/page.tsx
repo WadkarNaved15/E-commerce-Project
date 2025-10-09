@@ -39,11 +39,12 @@ export default function BulkProductUpload() {
         hasError = true;
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        setError('Some files exceed 5MB and were skipped');
-        hasError = true;
-        return;
-      }
+     if (file.size > 10 * 1024 * 1024) {
+  setError('Some files exceed 10MB and were skipped');
+  hasError = true;
+  return;
+}
+
       validFiles.push(file);
     });
 
@@ -224,7 +225,7 @@ const downloadTemplate = () => {
           };
 
           // Validate required fields
-          if (!productData.name || !productData.price || !productData.Category) {
+          if (!productData.name || !productData.price ) {
             throw new Error('Missing required fields: name, price, or category');
           }
 
@@ -335,7 +336,7 @@ const downloadTemplate = () => {
                       Click to upload product images
                     </span>
                     <span className="text-gray-500 text-sm">
-                      PNG, JPG, WEBP up to 5MB each
+                      PNG, JPG, WEBP up to 10MB each
                     </span>
                   </label>
                 </div>

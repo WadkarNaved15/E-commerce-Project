@@ -31,10 +31,10 @@ export async function POST(request: Request) {
         continue;
       }
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
         return NextResponse.json(
-          { error: 'File size too large. Max 5MB per image.' },
+          { error: 'File size too large. Max 10MB per image.' },
           { status: 400 }
         );
       }

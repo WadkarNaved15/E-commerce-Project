@@ -2,7 +2,7 @@ export interface Product {
   id: number;
   name: string;
   price: number;
-  category: 'Earings' | 'Rings' | 'Necklace';
+  category: 'Earings' | 'Rings' | 'Necklace' | 'Bangles';
   description: string;
   features: string[];
   images: string[];

@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     console.log("Received body:", body);
 
     // Validate required fields
-    if (!body.name || !body.price || !body.Category) {
+    if (!body.name || !body.price ) {
       return NextResponse.json(
         { error: 'Missing required fields: name, price, category' },
         { status: 400 }
@@ -52,8 +52,8 @@ export async function POST(request: Request) {
         category: body.Category,
         description: body.description || '',
         features: body.features || [],
-        images: body.images, // Array of image URLs from local storage
-        sizes: body.sizes,
+        images: body.images || [], // Array of image URLs from local storage
+        sizes: body.sizes || [],
         rating: parseFloat(body.rating) || 0,
         popularity: parseInt(body.popularity) || 0,
       }
