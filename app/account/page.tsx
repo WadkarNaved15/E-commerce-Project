@@ -11,7 +11,7 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 function AccountPageContent() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, loading } = useAuth();
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
@@ -35,11 +35,10 @@ function AccountPageContent() {
   }, []);
  
 useEffect(() => {
-  console.log("isAuthenticated",isAuthenticated)
-  if (!isAuthenticated) {
+  if (!loading && !isAuthenticated) {
     router.push('/login');
   }
-}, [isAuthenticated]);
+}, [loading, isAuthenticated, router]);
 
   const handleLogout = async () => {
     try {

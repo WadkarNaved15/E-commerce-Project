@@ -6,13 +6,14 @@ import { useRouter } from 'next/navigation';
 interface User {
   id: string;
   role: string;
-  email: string;
+  email?: string;
   name?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean; // 👈 added
   logout: () => void;
   fetchUser: () => Promise<void>;
 }
@@ -27,24 +28,29 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true); // 👈 added
   const router = useRouter();
 
   const fetchUser = async () => {
     try {
+      setLoading(true);
       const res = await fetch('/api/me', {
-      method: 'GET',
-      credentials: 'include', // ✅ ensures cookies are sent on Vercel
-    });
-       // Create this API route to return user info from JWT
+        method: 'GET',
+        credentials: 'include', // ensures cookies are sent
+      });
+
       if (!res.ok) {
         setUser(null);
         return;
       }
+
       const data = await res.json();
       setUser(data.user);
     } catch (error) {
       console.error('Error fetching user:', error);
       setUser(null);
+    } finally {
+      setLoading(false); // 👈 done fetching
     }
   };
 
@@ -52,14 +58,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     fetchUser();
   }, []);
 
-  const logout = async() => {
-     try {
-    await fetch('/api/logout', { method: 'POST' }); // clear cookie
-    setUser(null); // clear user state
-    router.push('/'); // redirect to homepage
-  } catch (error) {
-    console.error('Logout failed', error);
-  };
+  const logout = async () => {
+    try {
+      await fetch('/api/logout', { method: 'POST' });
+      setUser(null);
+      router.push('/');
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
   };
 
   return (
@@ -67,6 +73,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       value={{
         user,
         isAuthenticated: !!user,
+        loading, // 👈 expose it
         logout,
         fetchUser,
       }}
