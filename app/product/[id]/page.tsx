@@ -134,9 +134,6 @@ export default function ProductDetailPage() {
   //   setSelectedColor(product.colors[0].name);
   // }
 
-  const relatedProducts = allProducts
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();       // Stop Link navigation
     e.stopPropagation();
