@@ -11,12 +11,11 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 function AccountPageContent() {
-  const { isAuthenticated, logout, loading } = useAuth();
+  const { isAuthenticated, logout, loading, user } = useAuth();
   const router = useRouter();
-  const [role, setRole] = useState<string | null>(null);
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-
+  const role=user?.role;
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -48,7 +47,7 @@ useEffect(() => {
       toast.error(error.message || 'Logout failed');
     }
   };
-
+  
 
   const getStatusColor = (status: string) => {
     switch (status) {
