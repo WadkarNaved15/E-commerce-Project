@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Star, ShoppingCart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Product } from '@/lib/products';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
 
@@ -18,6 +20,17 @@ interface ProductCardProps {
 export default function ProductCard({ product, delay = 0 }: ProductCardProps) {
   const { addToCart } = useCart();
   const [isHovered, setIsHovered] = useState(false);
+  const {isAuthenticated} = useAuth();
+  const router = useRouter();
+   const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();       // Stop Link navigation
+    e.stopPropagation(); 
+    if (!isAuthenticated) {
+      router.push("/login"); // redirect if not logged in
+    } else {
+      handleQuickAdd(e); // run normal function if logged in
+    }
+  };
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -80,7 +93,7 @@ export default function ProductCard({ product, delay = 0 }: ProductCardProps) {
             <motion.button
               initial={{ y: 20 }}
               animate={{ y: isHovered ? 0 : 20 }}
-              onClick={handleQuickAdd}
+              onClick={handleClick}
               className="bg-white text-luxury-navy px-6 py-3 rounded-lg font-medium hover:bg-luxury-gold hover:text-white transition-all duration-300 flex items-center space-x-2 shadow-lg"
             >
               <ShoppingCart size={18} />
