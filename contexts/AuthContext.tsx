@@ -13,7 +13,8 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  loading: boolean; // 👈 added
+  loading: boolean;
+  login: (email: string, password: string) => Promise<void>; // 👈 added
   logout: () => void;
   fetchUser: () => Promise<void>;
 }
@@ -28,39 +29,53 @@ export const useAuth = () => {
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // 👈 added
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const fetchUser = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/me', {
-        method: 'GET',
-        credentials: 'include', // ensures cookies are sent
-      });
-
+      const res = await fetch('/api/me', { credentials: 'include' });
       if (!res.ok) {
         setUser(null);
         return;
       }
-
       const data = await res.json();
       setUser(data.user);
     } catch (error) {
       console.error('Error fetching user:', error);
       setUser(null);
     } finally {
-      setLoading(false); // 👈 done fetching
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  const login = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include',
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Login failed');
+
+      await fetchUser(); // 👈 instantly updates user in context
+      router.push('/'); // redirect after updating context
+    } catch (error) {
+      console.error(error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const logout = async () => {
     try {
-      await fetch('/api/logout', { method: 'POST' });
+      await fetch('/api/logout', { method: 'POST', credentials: 'include' });
       setUser(null);
       router.push('/');
     } catch (error) {
@@ -68,12 +83,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isAuthenticated: !!user,
-        loading, // 👈 expose it
+        loading,
+        login,
         logout,
         fetchUser,
       }}

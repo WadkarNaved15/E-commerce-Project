@@ -7,10 +7,14 @@ import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, Lock, User as UserIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/contexts/AuthContext'; // adjust path
+
+
+
 
 export default function LoginPage() {
   const router = useRouter();
-
+  const { login } = useAuth();
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [registerName, setRegisterName] = useState('');
@@ -30,7 +34,7 @@ export default function LoginPage() {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+const handleLogin = async (e: React.FormEvent) => {
   e.preventDefault();
 
   setLoginEmailError('');
@@ -52,24 +56,9 @@ export default function LoginPage() {
   setIsLoading(true);
 
   try {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: loginEmail,
-        password: loginPassword,
-      }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      throw new Error(data.message || 'Login failed');
-    }
-
+    await login(loginEmail, loginPassword); // 👈 use AuthContext instead of direct fetch
     toast.success('Login successful!');
-    router.push('/')
-
+    router.push('/'); // redirect or home after login
   } catch (error: any) {
     toast.error(error.message || 'Login failed');
     setLoginPasswordError(error.message);
@@ -79,8 +68,10 @@ export default function LoginPage() {
 };
 
 
-  const handleRegister = async (e: React.FormEvent) => {
+
+const handleRegister = async (e: React.FormEvent) => {
   e.preventDefault();
+
   setRegisterNameError('');
   setRegisterEmailError('');
   setRegisterPasswordError('');
@@ -109,25 +100,21 @@ export default function LoginPage() {
   setIsLoading(true);
 
   try {
-    // Directly call your App Router API here
     const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: registerName,
-        email: registerEmail,
-        password: registerPassword,
-      }),
+      body: JSON.stringify({ name: registerName, email: registerEmail, password: registerPassword }),
+      credentials: 'include',
     });
 
     const data = await res.json();
 
-    if (!res.ok) {
-      throw new Error(data.message || 'Registration failed');
-    }
+    if (!res.ok) throw new Error(data.message || 'Registration failed');
+
+    // Automatically login after registration
+    await login(registerEmail, registerPassword);
 
     toast.success('Account created successfully!');
-    router.push('/');
   } catch (error: any) {
     toast.error(error.message || 'Registration failed');
     setRegisterEmailError(error.message);
