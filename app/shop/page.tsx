@@ -37,22 +37,29 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch('/api/products');
-        if (!response.ok) throw new Error('Failed to fetch products');
-        const allProducts: Product[] = await response.json();
-        setProducts(allProducts);
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
+useEffect(() => {
+  async function fetchData() {
+    const cached = localStorage.getItem("products");
+    if (cached) {
+      setProducts(JSON.parse(cached));
+      setLoading(false);
     }
-    fetchData();
-  }, []);
+
+    try {
+      const response = await fetch('/api/products', { cache: 'force-cache' });
+      if (!response.ok) throw new Error('Failed to fetch products');
+      const allProducts: Product[] = await response.json();
+      setProducts(allProducts);
+      localStorage.setItem("products", JSON.stringify(allProducts));
+    } catch (e) {
+      console.error(e);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }
+  fetchData();
+}, []);
 
 
   const availableSizes = useMemo(() => {

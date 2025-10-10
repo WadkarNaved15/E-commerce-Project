@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ArrowRight, Quote } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import type {Product} from "@/lib/products"
+import FeaturedCollection from "@/components/FeaturedCollection";
+
 
 
 
@@ -53,45 +55,46 @@ export default function HomePage() {
      const [loading, setLoading] = useState(true);
      const [error, setError] = useState(false);
 
-     useEffect(() => {
-         async function fetchData() {
-           try {
-             // 1. Fetch the single product and all products concurrently
-             const response = await fetch(`api/products`);
-             console.log("response",response)
-     
-             if (response.status === 404) {
-               setError(true);
-               setLoading(false);
-               return;
-             }
-     
-             if (!response.ok) {
-               throw new Error('Failed to fetch data');
-             }
-     
-              const allProducts: Product[] = await response.json();
-              setProducts(allProducts);
-    
-     
-           } catch (e) {
-             console.error(e);
-             setError(true);
-           } finally {
-             setLoading(false);
-           }
-         }
-     
-         fetchData();
-      const timer = setInterval(() => {
+  // Optimized data fetching with caching
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const cached = localStorage.getItem('products');
+        if (cached) {
+          setProducts(JSON.parse(cached));
+          setLoading(false);
+        }
+
+        const response = await fetch('/api/products', { cache: 'force-cache' });
+        if (!response.ok) throw new Error('Failed to fetch products');
+        const allProducts: Product[] = await response.json();
+
+        setProducts(allProducts);
+        localStorage.setItem('products', JSON.stringify(allProducts));
+      } catch (e) {
+        console.error(e);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+
+    // Auto-slide transitions
+    const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
-     const timer2 = setInterval(() => {
+
+    const timer2 = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
     }, 4000);
-    return () =>{ clearInterval(timer)
-      clearInterval(timer2)};
-       }, []);
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(timer2);
+    };
+  }, []);
 
 
   const nextSlide = () => {
@@ -189,34 +192,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-luxury-navy mb-4">
-            Featured Collection
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Handpicked pieces that embody timeless sophistication and modern elegance
-          </p>
-        </div>
+     <FeaturedCollection products={products} />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {featuredProducts.map((product, index) => (
-            <ProductCard key={product.id} product={product} delay={index * 0.1} />
-          ))}
-        </div>
-
-        <div className="text-center">
-          <Link href="/shop">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="bg-luxury-navy text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all inline-flex items-center space-x-2"
-            >
-              <span>Shop the Collection</span>
-              <ArrowRight size={18} />
-            </motion.button>
-          </Link>
-        </div>
-      </section>
 
       <section className="bg-luxury-gray py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
