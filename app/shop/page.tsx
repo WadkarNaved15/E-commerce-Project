@@ -2,10 +2,9 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Ban, Filter, X } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import type { Product } from '@/lib/products';
-import { sortProducts } from '@/lib/products';
 import { Slider } from '@/components/ui/slider';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -16,79 +15,84 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-
-// ✅ Move this outside the component
 const categorySizes: Record<string, string[]> = {
   Rings: ['6', '7', '8', '9', '10', '11', '12'],
   Earings: ['One Size'],
   Necklace: ['One Size'],
-  Bangles: ['2.2','2.4', '2.6', '2.8','3.0', 'Free Size'],
+  Bangles: ['2.2', '2.4', '2.6', '2.8', '3.0', 'Free Size'],
 };
 
-
 export default function ShopPage() {
-    const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [priceRange, setPriceRange] = useState<number[]>([0, 5000]);
   const [selectedSizes, setSelectedSizes] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState<string>('popularity');
   const [showFilters, setShowFilters] = useState(false);
-  const [displayCount, setDisplayCount] = useState(12);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
 
-useEffect(() => {
-  async function fetchData() {
-    const cached = localStorage.getItem("products");
-    if (cached) {
-      setProducts(JSON.parse(cached));
-      setLoading(false);
+  // Fetch products from backend
+  const fetchProducts = async (append = false) => {
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
     }
 
     try {
-      const response = await fetch('/api/products', { cache: 'force-cache' });
+      const params = new URLSearchParams({
+        limit: '12',
+        offset: append ? products.length.toString() : '0',
+        minPrice: priceRange[0].toString(),
+        maxPrice: priceRange[1].toString(),
+        sortBy,
+      });
+
+      if (selectedCategory !== 'All') {
+        params.append('category', selectedCategory);
+      }
+
+      if (selectedSizes.length > 0) {
+        params.append('sizes', selectedSizes.join(','));
+      }
+
+      const response = await fetch(`/api/products?${params.toString()}`);
       if (!response.ok) throw new Error('Failed to fetch products');
-      const allProducts: Product[] = await response.json();
-      setProducts(allProducts);
-      localStorage.setItem("products", JSON.stringify(allProducts));
+
+      const data = await response.json();
+      
+      if (append) {
+        setProducts((prev) => [...prev, ...data.products]);
+      } else {
+        setProducts(data.products);
+      }
+      
+      setTotalCount(data.totalCount);
+      setHasMore(data.hasMore);
     } catch (e) {
       console.error(e);
       setError(true);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
-  }
-  fetchData();
-}, []);
+  };
 
+  // Fetch products when filters change
+  useEffect(() => {
+    fetchProducts(false);
+  }, [selectedCategory, priceRange, selectedSizes, sortBy]);
 
   const availableSizes = useMemo(() => {
     if (selectedCategory === 'All') {
       return Array.from(new Set(Object.values(categorySizes).flat()));
     }
     return categorySizes[selectedCategory] || [];
-  }, [selectedCategory])
-
-
-
-  // ✅ Filter using fetched products
-  const filteredAndSortedProducts = useMemo(() => {
-    let filtered = products.filter((product) => {
-      if (selectedCategory !== 'All' && product.category !== selectedCategory)
-        return false;
-      if (product.price < priceRange[0] || product.price > priceRange[1])
-        return false;
-      if (selectedSizes.length > 0) {
-        const hasSize = product.sizes.some((s) => selectedSizes.includes(s));
-        if (!hasSize) return false;
-      }
-      return true;
-    });
-
-    return sortProducts(filtered, sortBy);
-  }, [products, selectedCategory, priceRange, selectedSizes, sortBy]);
-
-  const displayedProducts = filteredAndSortedProducts.slice(0, displayCount);
+  }, [selectedCategory]);
 
   const handleSizeToggle = (size: string) => {
     setSelectedSizes((prev) =>
@@ -96,9 +100,13 @@ useEffect(() => {
     );
   };
 
+  const loadMoreProducts = () => {
+    fetchProducts(true);
+  };
+
   const clearFilters = () => {
     setSelectedCategory('All');
-    setPriceRange([0,5000]);
+    setPriceRange([0, 5000]);
     setSelectedSizes([]);
   };
 
@@ -119,23 +127,22 @@ useEffect(() => {
       <div>
         <h4 className="font-medium mb-4">Category</h4>
         <div className="space-y-2">
-          {['All', 'Earings', 'Rings', 'Necklace','Bangles'].map((category) => (
-  <button
-    key={category}
-    onClick={() => {
-      setSelectedCategory(category);
-      setSelectedSizes([]); // reset selected sizes when changing category
-    }}
-    className={`block w-full text-left px-4 py-2 rounded-lg transition-colors ${
-      selectedCategory === category
-        ? 'bg-luxury-navy text-white'
-        : 'hover:bg-luxury-gray'
-    }`}
-  >
-    {category}
-  </button>
-))}
-
+          {['All', 'Earings', 'Rings', 'Necklace', 'Bangles'].map((category) => (
+            <button
+              key={category}
+              onClick={() => {
+                setSelectedCategory(category);
+                setSelectedSizes([]);
+              }}
+              className={`block w-full text-left px-4 py-2 rounded-lg transition-colors ${
+                selectedCategory === category
+                  ? 'bg-luxury-navy text-white'
+                  : 'hover:bg-luxury-gray'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -154,36 +161,37 @@ useEffect(() => {
       </div>
 
       {availableSizes.length > 1 && (
-  <div>
-    <h4 className="font-medium mb-4">Size</h4>
-    <div className="grid grid-cols-3 gap-2">
-      {availableSizes.map((size) => (
-        <label key={size} className="flex items-center space-x-2 cursor-pointer">
-          <Checkbox
-            checked={selectedSizes.includes(size)}
-            onCheckedChange={() => handleSizeToggle(size)}
-          />
-          <span className="text-sm">{size}</span>
-        </label>
-      ))}
-    </div>
-  </div>
-)}
+        <div>
+          <h4 className="font-medium mb-4">Size</h4>
+          <div className="grid grid-cols-3 gap-2">
+            {availableSizes.map((size) => (
+              <label
+                key={size}
+                className="flex items-center space-x-2 cursor-pointer"
+              >
+                <Checkbox
+                  checked={selectedSizes.includes(size)}
+                  onCheckedChange={() => handleSizeToggle(size)}
+                />
+                <span className="text-sm">{size}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 
-  if (loading) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-white">
-      <div className="text-center">
-        {/* Loader */}
-        <div className="w-12 h-12 border-4 border-t-luxury-gold border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
-        <p className="text-luxury-gold hover:underline">Loading product...</p>
+  if (loading && products.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-t-luxury-gold border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-luxury-gold">Loading products...</p>
+        </div>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   if (error)
     return (
@@ -199,7 +207,7 @@ useEffect(() => {
           Shop Collection
         </h1>
         <p className="text-gray-600">
-          Discover {filteredAndSortedProducts.length} pieces of timeless elegance
+          Discover {totalCount} pieces of timeless elegance
         </p>
       </div>
 
@@ -258,7 +266,12 @@ useEffect(() => {
         )}
 
         <div className="lg:col-span-3">
-          {displayedProducts.length === 0 ? (
+          {loading && products.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="w-12 h-12 border-4 border-t-luxury-gold border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading products...</p>
+            </div>
+          ) : products.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-600 text-lg">
                 No products found matching your criteria.
@@ -273,7 +286,7 @@ useEffect(() => {
           ) : (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                {displayedProducts.map((product, index) => (
+                {products.map((product, index) => (
                   <ProductCard
                     key={product.id}
                     product={product}
@@ -282,13 +295,21 @@ useEffect(() => {
                 ))}
               </div>
 
-              {displayCount < filteredAndSortedProducts.length && (
+              {hasMore && (
                 <div className="text-center mt-12">
                   <button
-                    onClick={() => setDisplayCount((prev) => prev + 12)}
-                    className="bg-luxury-navy text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all"
+                    onClick={loadMoreProducts}
+                    disabled={loadingMore}
+                    className="bg-luxury-navy text-white px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Load More
+                    {loadingMore ? (
+                      <span className="flex items-center space-x-2">
+                        <div className="w-4 h-4 border-2 border-t-white border-gray-300 rounded-full animate-spin"></div>
+                        <span>Loading...</span>
+                      </span>
+                    ) : (
+                      'Load More'
+                    )}
                   </button>
                 </div>
               )}

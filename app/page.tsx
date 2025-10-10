@@ -57,30 +57,6 @@ export default function HomePage() {
 
   // Optimized data fetching with caching
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const cached = localStorage.getItem('products');
-        if (cached) {
-          setProducts(JSON.parse(cached));
-          setLoading(false);
-        }
-
-        const response = await fetch('/api/products', { cache: 'force-cache' });
-        if (!response.ok) throw new Error('Failed to fetch products');
-        const allProducts: Product[] = await response.json();
-
-        setProducts(allProducts);
-        localStorage.setItem('products', JSON.stringify(allProducts));
-      } catch (e) {
-        console.error(e);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchData();
-
     // Auto-slide transitions
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
@@ -105,7 +81,6 @@ export default function HomePage() {
     setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
   };
 
-  const featuredProducts = products.slice(0, 4);
 
   return (
     <div className="animate-fade-in">
@@ -191,8 +166,7 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-     <FeaturedCollection products={products} />
+    <FeaturedCollection />
 
 
       <section className="bg-luxury-gray py-24">
