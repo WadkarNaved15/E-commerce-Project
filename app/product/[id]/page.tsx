@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Star, Plus, Minus, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,7 +15,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import type { Product } from "@/lib/products"
+import type { Product } from '@/lib/products';
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -26,28 +26,24 @@ export default function ProductDetailPage() {
 
   // Use state to manage the product data
   const [product, setProduct] = useState<Product | null>(null);
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
-  // const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
-  // --- Data Fetching Effect ---
+  // Fetch product data
   useEffect(() => {
     async function fetchData() {
       if (!productId) return;
 
       setLoading(true);
       try {
-        // 1. Fetch the single product and all products concurrently
-        const [productRes, allProductsRes] = await Promise.all([
-          fetch(`/api/products/${productId}`),
-          fetch('/api/products'),
-        ]);
+        // Fetch the single product
+        const productRes = await fetch(`/api/products/${productId}`);
 
         if (productRes.status === 404) {
           setError(true);
@@ -55,21 +51,33 @@ export default function ProductDetailPage() {
           return;
         }
 
-        if (!productRes.ok || !allProductsRes.ok) {
-          throw new Error('Failed to fetch data');
+        if (!productRes.ok) {
+          throw new Error('Failed to fetch product');
         }
 
         const productData: Product = await productRes.json();
-        const allProductsData: Product[] = await allProductsRes.json();
-
         setProduct(productData);
-        setAllProducts(allProductsData);
 
-        // Initialize state based on fetched product data
+        // Initialize selected size
         if (productData.sizes.length > 0) {
           setSelectedSize(productData.sizes[0]);
         }
 
+        // Fetch related products (same category, limit 4)
+        if (productData.category) {
+          const relatedRes = await fetch(
+            `/api/products?category=${productData.category}&limit=5`
+          );
+          
+          if (relatedRes.ok) {
+            const relatedData = await relatedRes.json();
+            // Filter out current product and limit to 4
+            const filtered = relatedData.products
+              .filter((p: Product) => p.id !== productId)
+              .slice(0, 4);
+            setRelatedProducts(filtered);
+          }
+        }
       } catch (e) {
         console.error(e);
         setError(true);
@@ -81,23 +89,18 @@ export default function ProductDetailPage() {
     fetchData();
   }, [productId]);
 
-  console.log("product", product)
-  console.log("All products", allProducts)
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          {/* Loader */}
           <div className="w-12 h-12 border-4 border-t-luxury-gold border-gray-200 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-luxury-gold hover:underline">Loading product...</p>
+          <p className="text-luxury-gold">Loading product...</p>
         </div>
       </div>
     );
   }
 
-
-  if (!product) {
+  if (error || !product) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -145,7 +148,7 @@ export default function ProductDetailPage() {
   };
   const handleAddToCart = () => {
     if (!selectedSize) {
-      toast.error('Please select size and color');
+      toast.error('Please select a size');
       return;
     }
 
@@ -183,6 +186,7 @@ export default function ProductDetailPage() {
     <div className="animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
+          {/* Image Gallery */}
           <div>
             <div className="mb-4">
               <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
@@ -238,6 +242,7 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
+          {/* Product Details */}
           <div>
             <h1 className="text-4xl font-serif font-bold text-luxury-navy mb-4">
               {product.name}
@@ -253,21 +258,28 @@ export default function ProductDetailPage() {
               ₹{product.price.toLocaleString()}
             </p>
 
-            <p className="text-gray-700 leading-relaxed mb-6">{product.description}</p>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              {product.description}
+            </p>
 
             <div className="space-y-6 mb-8">
+              {/* Features */}
               <div>
                 <h3 className="font-semibold mb-3">Features</h3>
                 <ul className="space-y-2">
                   {product.features.map((feature, index) => (
                     <li key={index} className="flex items-start space-x-2">
-                      <Check className="text-luxury-gold mt-1 flex-shrink-0" size={16} />
+                      <Check
+                        className="text-luxury-gold mt-1 flex-shrink-0"
+                        size={16}
+                      />
                       <span className="text-gray-700">{feature}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
+              {/* Size Selection */}
               <div>
                 <h3 className="font-semibold mb-3">Select Size</h3>
                 <div className="flex flex-wrap gap-2">
@@ -286,29 +298,7 @@ export default function ProductDetailPage() {
                 </div>
               </div>
 
-              {/* <div>
-                <h3 className="font-semibold mb-3">Select Color</h3>
-                <div className="flex flex-wrap gap-3">
-                  {product.colors.map((color) => (
-                    <button
-                      key={color.name}
-                      onClick={() => setSelectedColor(color.name)}
-                      className={`flex items-center space-x-2 px-4 py-2 border rounded-lg transition-all ${
-                        selectedColor === color.name
-                          ? 'border-luxury-gold'
-                          : 'border-gray-300 hover:border-luxury-gold'
-                      }`}
-                    >
-                      <div
-                        className="w-6 h-6 rounded-full border border-gray-300"
-                        style={{ backgroundColor: color.hex }}
-                      />
-                      <span>{color.name}</span>
-                    </button>
-                  ))}
-                </div>
-              </div> */}
-
+              {/* Quantity */}
               <div>
                 <h3 className="font-semibold mb-3">Quantity</h3>
                 <div className="flex items-center space-x-4">
@@ -331,6 +321,7 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
+            {/* Action Buttons */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -360,6 +351,7 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
+        {/* Related Products */}
         {relatedProducts.length > 0 && (
           <section>
             <h2 className="text-3xl font-serif font-bold text-luxury-navy mb-8">
