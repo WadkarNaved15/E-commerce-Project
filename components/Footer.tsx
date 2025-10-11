@@ -27,32 +27,37 @@ export default function Footer() {
               Timeless elegance meets contemporary design. Discover our curated collection
               of luxury fashion pieces crafted for the discerning individual.
             </p>
-            <div className="flex space-x-4">
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                className="w-10 h-10 rounded-full bg-luxury-gold flex items-center justify-center hover:bg-opacity-90 transition-colors"
-                aria-label="Instagram"
-              >
-                <Instagram size={20} />
-              </motion.a>
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                className="w-10 h-10 rounded-full bg-luxury-gold flex items-center justify-center hover:bg-opacity-90 transition-colors"
-                aria-label="Facebook"
-              >
-                <Facebook size={20} />
-              </motion.a>
-              <motion.a
-                href="#"
-                whileHover={{ scale: 1.1 }}
-                className="w-10 h-10 rounded-full bg-luxury-gold flex items-center justify-center hover:bg-opacity-90 transition-colors"
-                aria-label="Twitter"
-              >
-                <Twitter size={20} />
-              </motion.a>
-            </div>
+           <div className="flex space-x-4">
+            <motion.a
+              href="https://www.instagram.com/heeriyabyanj/"
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={{ scale: 1.1 }}
+              className="w-10 h-10 rounded-full bg-luxury-gold flex items-center justify-center hover:bg-opacity-90 transition-colors"
+              aria-label="Instagram"
+            >
+              <Instagram size={20} />
+            </motion.a>
+
+            <motion.a
+              href="#"
+              whileHover={{ scale: 1.1 }}
+              className="w-10 h-10 rounded-full bg-luxury-gold flex items-center justify-center hover:bg-opacity-90 transition-colors"
+              aria-label="Facebook"
+            >
+              <Facebook size={20} />
+            </motion.a>
+
+            <motion.a
+              href="#"
+              whileHover={{ scale: 1.1 }}
+              className="w-10 h-10 rounded-full bg-luxury-gold flex items-center justify-center hover:bg-opacity-90 transition-colors"
+              aria-label="Twitter"
+            >
+              <Twitter size={20} />
+            </motion.a>
+          </div>
+
           </div>
 
           <div>

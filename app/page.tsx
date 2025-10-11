@@ -14,36 +14,37 @@ import FeaturedCollection from "@/components/FeaturedCollection";
 
 const heroSlides = [
   {
-    image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1920&q=80',
-    title: 'Timeless Elegance Awaits',
-    subtitle: 'Discover Our Spring Collection',
+    image: '/uploads/Product-1.jpg',
+    title: 'Elegance Crafted in Every Detail',
+    subtitle: 'Discover heirloom jewelry designed to shine for generations.',
   },
   {
-    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80',
-    title: 'Sophistication Redefined',
-    subtitle: 'Luxury That Speaks Volumes',
+    image: '/uploads/Product-2.jpg',
+    title: 'Adorn Your Story with Brilliance',
+    subtitle: 'Each gemstone tells a tale of grace, love, and timeless beauty.',
   },
   {
-    image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1920&q=80',
-    title: 'Where Style Meets Grace',
-    subtitle: 'Curated For The Discerning',
+    image: '/uploads/Product-3.jpg',
+    title: 'The Art of Fine Adornment',
+    subtitle: 'Handcrafted luxury that celebrates you—inside and out.',
   },
 ];
 
+
 const testimonials = [
   {
-    text: 'Heeriya has elevated my style. Every piece is a work of art.',
-    author: 'Sarah Mitchell',
-    role: 'Fashion Consultant',
+    text: 'Heeriya’s craftsmanship is unmatched. Every piece feels personal and refined.',
+    author: 'Aaradhya Kapoor',
+    role: 'Luxury Stylist',
   },
   {
-    text: 'Unparalleled quality and timeless designs. Worth every penny.',
-    author: 'Emily Chen',
-    role: 'Creative Director',
+    text: 'The jewelry radiates elegance and confidence—perfect for any special occasion.',
+    author: 'Mira Joshi',
+    role: 'Fashion Editor',
   },
   {
-    text: 'The attention to detail is extraordinary. I always receive compliments.',
-    author: 'Isabella Romano',
+    text: 'I felt truly special wearing Heeriya. The design, sparkle, and finish are exquisite.',
+    author: 'Leena Mehta',
     role: 'Entrepreneur',
   },
 ];
@@ -60,11 +61,11 @@ export default function HomePage() {
     // Auto-slide transitions
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
+    }, 10000);
 
     const timer2 = setInterval(() => {
       setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 4000);
+    }, 10000);
 
     return () => {
       clearInterval(timer);
@@ -84,7 +85,7 @@ export default function HomePage() {
 
   return (
     <div className="animate-fade-in">
-      <section className="relative h-[90vh] overflow-hidden">
+      <section className="relative h-[70vh] md:h-[80vh] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -102,7 +103,7 @@ export default function HomePage() {
               priority
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
           </motion.div>
         </AnimatePresence>
 
@@ -116,10 +117,10 @@ export default function HomePage() {
                 exit={{ y: -20, opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6">
+                <h1 className="text-3xl md:text-5xl font-serif font-bold mb-4 leading-tight">
                   {heroSlides[currentSlide].title}
                 </h1>
-                <p className="text-xl md:text-2xl mb-8 text-gray-200">
+                <p className="text-base md:text-lg mb-6 text-gray-200 max-w-2xl mx-auto">
                   {heroSlides[currentSlide].subtitle}
                 </p>
                 <Link href="/shop">
@@ -224,16 +225,17 @@ export default function HomePage() {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80',
-            'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400&q=80',
-            'https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=400&q=80',
-            'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&q=80',
+            '/uploads/Instagram-1.png',
+            '/uploads/Instagram-2.png',
+            '/uploads/Instagram-3.png',
+            '/uploads/Instagram-4.png',
           ].map((img, index) => (
-            <motion.div
-              key={index}
-              whileHover={{ scale: 1.05 }}
-              className="aspect-square relative overflow-hidden rounded-lg cursor-pointer"
-            >
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.05 }}
+               className="relative h-80 md:h-96 overflow-hidden rounded-xl cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.15)] hover:shadow-[0_6px_25px_rgba(0,0,0,0.25)] transition-shadow"
+
+              >
               <Image
                 src={img}
                 alt={`Instagram post ${index + 1}`}
