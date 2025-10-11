@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Star, Plus, Minus, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/CartContext';
 import ProductCard from '@/components/ProductCard';
@@ -19,9 +20,11 @@ import type { Product } from '@/lib/products';
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
   const { addToCart } = useCart();
   const productId = parseInt(params.id as string);
 
+  // Use state to manage the product data
   const [product, setProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,6 +116,33 @@ export default function ProductDetailPage() {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="loader mb-4"></div>
+          <p>Loading product...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!selectedSize && product.sizes.length > 0) {
+    setSelectedSize(product.sizes[0]);
+  }
+  // if (!selectedColor && product.colors.length > 0) {
+  //   setSelectedColor(product.colors[0].name);
+  // }
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();       // Stop Link navigation
+    e.stopPropagation();
+    if (!isAuthenticated) {
+      router.push("/login"); // redirect if not logged in
+    } else {
+      handleAddToCart(); // run normal function if logged in
+    }
+  };
   const handleAddToCart = () => {
     if (!selectedSize) {
       toast.error('Please select a size');
@@ -192,11 +222,10 @@ export default function ProductDetailPage() {
                   key={index}
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setSelectedImage(index)}
-                  className={`relative aspect-square rounded-lg overflow-hidden ${
-                    selectedImage === index
+                  className={`relative aspect-square rounded-lg overflow-hidden ${selectedImage === index
                       ? 'ring-2 ring-luxury-gold'
                       : 'ring-1 ring-gray-300'
-                  }`}
+                    }`}
                 >
                   <Image
                     src={image}
@@ -255,11 +284,10 @@ export default function ProductDetailPage() {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-2 border rounded-lg transition-all ${
-                        selectedSize === size
+                      className={`px-4 py-2 border rounded-lg transition-all ${selectedSize === size
                           ? 'border-luxury-gold bg-luxury-gold text-white'
                           : 'border-gray-300 hover:border-luxury-gold'
-                      }`}
+                        }`}
                     >
                       {size}
                     </button>
@@ -294,21 +322,29 @@ export default function ProductDetailPage() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={handleAddToCart}
+              onClick={handleClick}
               className="w-full bg-luxury-gold text-white py-4 rounded-lg font-semibold text-lg hover:bg-opacity-90 transition-all mb-4"
             >
               Add to Cart
             </motion.button>
 
             <button
-              onClick={() => {
-                handleAddToCart();
-                router.push('/cart');
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!isAuthenticated) {
+                  router.push('/login'); // redirect to login if not logged in
+                } else {
+                  handleAddToCart();     // add item to cart
+                  router.push('/cart');  // then redirect to cart page
+                }
               }}
               className="w-full border-2 border-luxury-navy text-luxury-navy py-4 rounded-lg font-semibold text-lg hover:bg-luxury-navy hover:text-white transition-all"
             >
               Buy Now
             </button>
+
           </div>
         </div>
 
