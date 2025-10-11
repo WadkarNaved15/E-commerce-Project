@@ -60,13 +60,13 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center space-x-4 md:space-x-6">
-              <button
+              {/* <button
                 onClick={() => setIsSearchOpen(!isSearchOpen)}
                 className="text-gray-600 hover:text-luxury-navy transition-colors"
                 aria-label="Search"
               >
                 <Search size={20} />
-              </button>
+              </button> */}
 
               <Link
                 href={isAuthenticated ? '/account' : '/login'}
