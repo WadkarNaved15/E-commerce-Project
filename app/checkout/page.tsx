@@ -214,9 +214,7 @@ function CheckoutPageContent() {
                     }
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-luxury-gold transition-colors"
                   >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>United Kingdom</option>
+                    <option>India</option>
                   </select>
                 </div>
               </div>
