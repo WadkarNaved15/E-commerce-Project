@@ -52,10 +52,10 @@ export default function AboutPage() {
             transition={{ duration: 0.8 }}
             className="text-center text-white px-4"
           >
-            <h1 className="text-4xl md:text-6xl font-serif font-bold mb-4">
+          <h1 className="hidden md:block text-4xl md:text-6xl font-serif font-bold mb-4">
               The Essence of Heeriya
             </h1>
-            <p className="text-lg md:text-2xl max-w-2xl mx-auto text-gray-200">
+            <p className="hidden md:block text-lg md:text-2xl max-w-2xl mx-auto text-gray-200">
               Where heritage artistry meets modern sophistication
             </p>
           </motion.div>
