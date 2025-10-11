@@ -331,7 +331,7 @@ function CheckoutPageContent() {
                           {item.product.name} x {item.quantity}
                         </span>
                         <span className="font-semibold">
-                          ${(item.product.price * item.quantity).toLocaleString()}
+                          ₹{(item.product.price * item.quantity).toLocaleString()}
                         </span>
                       </div>
                     ))}
@@ -381,7 +381,7 @@ function CheckoutPageContent() {
             <div className="space-y-4">
               <div className="flex justify-between text-gray-700">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-700">
                 <span>Shipping</span>
@@ -389,12 +389,12 @@ function CheckoutPageContent() {
               </div>
               <div className="flex justify-between text-gray-700">
                 <span>Tax</span>
-                <span>${tax.toFixed(2)}</span>
+                <span>₹{tax.toFixed(2)}</span>
               </div>
               <div className="border-t border-gray-300 pt-4">
                 <div className="flex justify-between text-lg font-bold text-luxury-navy">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>

@@ -151,7 +151,7 @@ export default function CartPage() {
                     </div>
 
                     <p className="text-xl font-bold text-luxury-navy">
-                      ${(item.product.price * item.quantity).toLocaleString()}
+                      ₹{(item.product.price * item.quantity).toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -174,22 +174,22 @@ export default function CartPage() {
             <div className="space-y-4 mb-6">
               <div className="flex justify-between text-gray-700">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>₹{subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-gray-700">
                 <span>Tax (8%)</span>
-                <span>${tax.toFixed(2)}</span>
+                <span>₹{tax.toFixed(2)}</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount</span>
-                  <span>-${discount.toFixed(2)}</span>
+                  <span>-₹{discount.toFixed(2)}</span>
                 </div>
               )}
               <div className="border-t border-gray-300 pt-4">
                 <div className="flex justify-between text-lg font-bold text-luxury-navy">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
