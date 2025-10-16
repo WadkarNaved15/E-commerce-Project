@@ -8,7 +8,7 @@ import { ChevronLeft, ChevronRight, ArrowRight, Quote } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import type {Product} from "@/lib/products"
 import FeaturedCollection from "@/components/FeaturedCollection";
-
+import Ad from "@/components/Ad"
 
 
 
@@ -85,6 +85,7 @@ export default function HomePage() {
 
   return (
     <div className="animate-fade-in">
+      {/* <Ad /> */}
       <section className="relative h-[70vh] md:h-[80vh] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
