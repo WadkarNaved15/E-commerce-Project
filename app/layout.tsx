@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     canonical: 'https://heeriya.vercel.app',
   },
 
-  // ✅ Use the same logo everywhere
   icons: {
     icon: '/uploads/Logo.jpg',        // Browser tab
     shortcut: '/uploads/Logo.jpg',    // Shortcut icon
@@ -79,7 +78,7 @@ export const metadata: Metadata = {
       url: 'https://heeriya.vercel.app',
       logo: 'https://heeriya.vercel.app/uploads/Logo.jpg',
       sameAs: [
-        'https://www.instagram.com/heeriyaofficial',
+        'https://www.instagram.com/heeriyabyanj',
         'https://www.facebook.com/heeriyaofficial',
         'https://x.com/HeeriyaOfficial',
       ],

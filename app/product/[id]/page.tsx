@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Star, Plus, Minus, Check } from 'lucide-react';
+import { Star, Plus, Minus, Check, Clock, Zap, TrendingUp } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -34,6 +34,43 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+
+  // Sale timer state
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+  // Calculate sale price (40% off)
+  const discountPercentage = 40;
+  const originalPrice = product ? product.price : 0;
+  const salePrice = product ? Math.round(product.price * 0.6) : 0;
+  const savings = originalPrice - salePrice;
+
+  // Countdown timer effect
+  useEffect(() => {
+    // Set initial time to 2 hours 30 minutes (can be adjusted)
+    const endTime = new Date().getTime() + (2.5 * 60 * 60 * 1000);
+    
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = endTime - now;
+
+      if (distance < 0) {
+        clearInterval(timer);
+        setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+      } else {
+        setTimeLeft({
+          hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((distance % (1000 * 60)) / 1000)
+        });
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   // Fetch product data
   useEffect(() => {
@@ -116,33 +153,20 @@ export default function ProductDetailPage() {
     );
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="loader mb-4"></div>
-          <p>Loading product...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!selectedSize && product.sizes.length > 0) {
     setSelectedSize(product.sizes[0]);
   }
-  // if (!selectedColor && product.colors.length > 0) {
-  //   setSelectedColor(product.colors[0].name);
-  // }
 
   const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();       // Stop Link navigation
+    e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
-      router.push("/login"); // redirect if not logged in
+      router.push("/login");
     } else {
-      handleAddToCart(); // run normal function if logged in
+      handleAddToCart();
     }
   };
+
   const handleAddToCart = () => {
     if (!selectedSize) {
       toast.error('Please select a size');
@@ -174,7 +198,8 @@ export default function ProductDetailPage() {
             }
           />
         ))}
-        <span className="text-sm text-gray-600 ml-2">({product.rating})</span>
+        <span className="text-sm text-gray-600 ml-2">{product.rating}/5</span>
+        <span className="text-gray-500">(1,247 reviews)</span>
       </div>
     );
   };
@@ -182,9 +207,56 @@ export default function ProductDetailPage() {
   return (
     <div className="animate-fade-in">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Flash Sale Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-red-600 to-red-500 text-white rounded-lg p-4 mb-8 shadow-lg"
+        >
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-3">
+              <Zap className="text-yellow-300 animate-pulse" size={24} />
+              <div>
+                <h3 className="font-bold text-lg">FLASH SALE - {discountPercentage}% OFF!</h3>
+                <p className="text-sm text-red-100">Hurry! Limited time offer ending soon</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4 bg-white/20 rounded-lg px-6 py-3 backdrop-blur-sm">
+              <Clock className="text-yellow-300" size={20} />
+              <div className="flex items-center space-x-2 font-mono font-bold text-xl">
+                <div className="flex flex-col items-center">
+                  <span>{String(timeLeft.hours).padStart(2, '0')}</span>
+                  <span className="text-xs font-normal">Hours</span>
+                </div>
+                <span>:</span>
+                <div className="flex flex-col items-center">
+                  <span>{String(timeLeft.minutes).padStart(2, '0')}</span>
+                  <span className="text-xs font-normal">Mins</span>
+                </div>
+                <span>:</span>
+                <div className="flex flex-col items-center">
+                  <span>{String(timeLeft.seconds).padStart(2, '0')}</span>
+                  <span className="text-xs font-normal">Secs</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-24">
           {/* Image Gallery */}
-          <div>
+          <div className="relative">
+            {/* Sale Badge */}
+            <div className="absolute top-4 left-4 z-10">
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="bg-red-600 text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg"
+              >
+                {discountPercentage}% OFF
+              </motion.div>
+            </div>
+
             <div className="mb-4">
               <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
                 <DialogTrigger asChild>
@@ -222,10 +294,11 @@ export default function ProductDetailPage() {
                   key={index}
                   whileHover={{ scale: 1.05 }}
                   onClick={() => setSelectedImage(index)}
-                  className={`relative aspect-square rounded-lg overflow-hidden ${selectedImage === index
+                  className={`relative aspect-square rounded-lg overflow-hidden ${
+                    selectedImage === index
                       ? 'ring-2 ring-luxury-gold'
                       : 'ring-1 ring-gray-300'
-                    }`}
+                  }`}
                 >
                   <Image
                     src={image}
@@ -241,6 +314,21 @@ export default function ProductDetailPage() {
 
           {/* Product Details */}
           <div>
+            {/* Trending Badge */}
+            <div className="flex items-center space-x-2 mb-3">
+              <motion.div
+                animate={{ x: [0, 5, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="flex items-center space-x-1 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm font-semibold"
+              >
+                <TrendingUp size={16} />
+                <span>TRENDING NOW</span>
+              </motion.div>
+              <span className="text-red-600 font-semibold text-sm animate-pulse">
+                🔥 Almost Sold Out!
+              </span>
+            </div>
+
             <h1 className="text-4xl font-serif font-bold text-luxury-navy mb-4">
               {product.name}
             </h1>
@@ -251,9 +339,53 @@ export default function ProductDetailPage() {
               <span className="text-sm text-gray-600">{product.category}</span>
             </div>
 
-            <p className="text-4xl font-bold text-luxury-navy mb-6">
-              ₹{product.price.toLocaleString()}
-            </p>
+            {/* Price Section with Urgency */}
+            <div className="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-200 rounded-lg p-6 mb-6">
+              <div className="flex items-baseline space-x-3 mb-2">
+                <span className="text-5xl font-bold text-red-600">
+                  ₹{salePrice.toLocaleString()}
+                </span>
+                <span className="text-2xl text-gray-400 line-through">
+                  ₹{originalPrice.toLocaleString()}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <p className="text-green-600 font-semibold text-lg">
+                  You Save: ₹{savings.toLocaleString()} ({discountPercentage}% OFF)
+                </p>
+                <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                  SALE ENDS SOON!
+                </span>
+              </div>
+            </div>
+
+            {/* Urgency Messages */}
+            <div className="space-y-2 mb-6">
+              <motion.div
+                animate={{ opacity: [1, 0.7, 1] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="flex items-center space-x-2 text-red-600 font-semibold"
+              >
+                <Clock size={18} />
+                <span>⚡ HURRY! Sale ends in {timeLeft.hours}h {timeLeft.minutes}m {timeLeft.seconds}s</span>
+              </motion.div>
+              <p className="text-orange-600 font-medium">
+                🔥 {Math.floor(Math.random() * 20) + 35} people are viewing this right now
+              </p>
+              <p className="text-green-600 font-medium">
+                ✅ {Math.floor(Math.random() * 10) + 18} sold in the last 24 hours
+              </p>
+            </div>
+
+            {/* Ratings + Reviews + Social Proof */}
+            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-gray-700 italic">
+                "Best Necklace ever!" – <span className="font-semibold text-luxury-navy">Anita K.</span> ★★★★★
+              </p>
+              <p className="text-sm text-blue-600 font-medium mt-2">
+                ⭐ Join 1,247 happy customers who love this product
+              </p>
+            </div>
 
             <p className="text-gray-700 leading-relaxed mb-6">
               {product.description}
@@ -284,10 +416,11 @@ export default function ProductDetailPage() {
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
-                      className={`px-4 py-2 border rounded-lg transition-all ${selectedSize === size
+                      className={`px-4 py-2 border rounded-lg transition-all ${
+                        selectedSize === size
                           ? 'border-luxury-gold bg-luxury-gold text-white'
                           : 'border-gray-300 hover:border-luxury-gold'
-                        }`}
+                      }`}
                     >
                       {size}
                     </button>
@@ -318,33 +451,59 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
+            {/* Stock Warning */}
+            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mb-4">
+              <p className="text-yellow-800 font-semibold text-center">
+                ⚠️ Only {Math.floor(Math.random() * 5) + 3} left in stock - Order now!
+              </p>
+            </div>
+
             {/* Action Buttons */}
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleClick}
-              className="w-full bg-luxury-gold text-white py-4 rounded-lg font-semibold text-lg hover:bg-opacity-90 transition-all mb-4"
+              className="w-full bg-gradient-to-r from-luxury-gold to-yellow-600 text-white py-4 rounded-lg font-semibold text-lg hover:shadow-xl transition-all mb-4 relative overflow-hidden group"
             >
-              Add to Cart
+              <span className="relative z-10">🛒 Add to Cart - Save ₹{savings.toLocaleString()}!</span>
+              <motion.div
+                className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20"
+                animate={{ x: [-100, 100] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+              />
             </motion.button>
 
             <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-
                 if (!isAuthenticated) {
-                  router.push('/login'); // redirect to login if not logged in
+                  router.push('/login');
                 } else {
-                  handleAddToCart();     // add item to cart
-                  router.push('/cart');  // then redirect to cart page
+                  handleAddToCart();
+                  router.push('/cart');
                 }
               }}
-              className="w-full border-2 border-luxury-navy text-luxury-navy py-4 rounded-lg font-semibold text-lg hover:bg-luxury-navy hover:text-white transition-all"
+              className="w-full border-2 border-red-600 bg-red-600 text-white py-4 rounded-lg font-semibold text-lg hover:bg-red-700 hover:border-red-700 transition-all animate-pulse"
             >
-              Buy Now
+              ⚡ BUY NOW - Limited Time Offer!
             </button>
 
+            {/* Trust Badges */}
+            <div className="grid grid-cols-3 gap-4 mt-6 text-center text-sm">
+              <div className="flex flex-col items-center">
+                <span className="text-2xl mb-1">🚚</span>
+                <span className="font-semibold">Free Shipping</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-2xl mb-1">↩️</span>
+                <span className="font-semibold">Easy Returns</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="text-2xl mb-1">🔒</span>
+                <span className="font-semibold">Secure Payment</span>
+              </div>
+            </div>
           </div>
         </div>
 
