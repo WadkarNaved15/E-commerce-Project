@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from "next/image";
 import { usePathname } from 'next/navigation';
 import { ShoppingCart, Menu, X, Search, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,11 +31,9 @@ export default function Navbar() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <Link href="/" className="flex items-center">
-              <h1 className="text-2xl md:text-3xl font-serif font-bold text-luxury-navy">
-                Heeriya
-              </h1>
-            </Link>
+    <Link href="/" className="flex items-center"> 
+    <h1 className="text-2xl md:text-3xl font-serif font-bold text-luxury-navy"> Heeriya </h1> 
+    </Link>
 
             <div className="hidden md:flex items-center space-x-8">
               {navLinks.map((link) => (

@@ -164,7 +164,7 @@ useEffect(() => {
                             {order.items.length} item{order.items.length > 1 ? "s" : ""}
                           </td>
                           <td className="px-4 py-4 text-sm font-semibold text-luxury-navy text-right">
-                            ${order.totalAmount.toLocaleString()}
+                            ₹{order.totalAmount.toLocaleString()}
                           </td>
                           <td className="px-4 py-4 text-sm text-gray-600 text-right">{order.shippingName}</td>
                         </tr>
