@@ -1,0 +1,23 @@
+{
+  "name": "Heeriya – Luxury Jewelry",
+  "short_name": "Heeriya",
+  "description": "Discover Heeriya’s exclusive collection of luxury jewelry.",
+  "icons": [
+    {
+      "src": "/uploads/Logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/uploads/Logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}

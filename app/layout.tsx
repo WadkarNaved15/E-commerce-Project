@@ -23,6 +23,18 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://heeriya.vercel.app',
   },
+
+  // ✅ Use the same logo everywhere
+  icons: {
+    icon: '/uploads/Logo.jpg',        // Browser tab
+    shortcut: '/uploads/Logo.jpg',    // Shortcut icon
+    apple: '/uploads/Logo.jpg',       // iOS / Apple Touch
+    other: [
+      { rel: 'mask-icon', url: '/uploads/Logo.jpg' },
+      { rel: 'android-chrome', url: '/uploads/Logo.jpg' },
+    ],
+  },
+
   openGraph: {
     title: 'Heeriya – Timeless Luxury Jewelry',
     description:
@@ -32,21 +44,23 @@ export const metadata: Metadata = {
     siteName: 'Heeriya',
     images: [
       {
-        url: 'https://heeriya.vercel.app/og-image.jpg', // optional: add your own image in /public
-        width: 1200,
-        height: 630,
+        url: 'https://heeriya.vercel.app/uploads/Logo.jpg', // ✅ Use logo for OG as well
+        width: 800,
+        height: 800,
         alt: 'Heeriya – Luxury Jewelry',
       },
     ],
   },
+
   twitter: {
     card: 'summary_large_image',
     title: 'Heeriya – Luxury Jewelry',
     description:
       'Explore Heeriya’s exquisite handcrafted jewelry collection made for elegance and timeless beauty.',
-    images: ['https://heeriya.vercel.app/og-image.jpg'], // same image works for Twitter
-    creator: '@HeeriyaOfficial', // optional if you have one
+    images: ['https://heeriya.vercel.app/uploads/Logo.jpg'], // ✅ Same logo for Twitter card
+    creator: '@HeeriyaOfficial',
   },
+
   robots: {
     index: true,
     follow: true,
@@ -54,6 +68,22 @@ export const metadata: Metadata = {
       index: true,
       follow: true,
     },
+  },
+
+  // ✅ SEO structured data (for Google to show logo in search results)
+  other: {
+    'application/ld+json': JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Heeriya – Luxury Jewelry',
+      url: 'https://heeriya.vercel.app',
+      logo: 'https://heeriya.vercel.app/uploads/Logo.jpg',
+      sameAs: [
+        'https://www.instagram.com/heeriyaofficial',
+        'https://www.facebook.com/heeriyaofficial',
+        'https://x.com/HeeriyaOfficial',
+      ],
+    }),
   },
 };
 
