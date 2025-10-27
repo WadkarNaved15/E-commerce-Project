@@ -85,8 +85,7 @@ export default function HomePage() {
 
   return (
     <div className="animate-fade-in">
-      {/* <Ad /> */}
-      <section className="relative h-[70vh] md:h-[80vh] overflow-hidden">
+      <section className="relative h-[50vh] md:h-[60vh] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -109,7 +108,7 @@ export default function HomePage() {
         </AnimatePresence>
 
         <div className="relative h-full flex items-center justify-center text-center text-white z-10">
-          <div className="max-w-4xl px-4">
+          <div className="max-w-3xl px-4">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentSlide}
@@ -118,20 +117,20 @@ export default function HomePage() {
                 exit={{ y: -20, opacity: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <h1 className="text-3xl md:text-5xl font-serif font-bold mb-4 leading-tight">
+                <h1 className="text-2xl md:text-4xl font-serif font-bold mb-3 leading-tight">
                   {heroSlides[currentSlide].title}
                 </h1>
-                <p className="text-base md:text-lg mb-6 text-gray-200 max-w-2xl mx-auto">
+                <p className="text-sm md:text-base mb-5 text-gray-200 max-w-xl mx-auto">
                   {heroSlides[currentSlide].subtitle}
                 </p>
                 <Link href="/shop">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-luxury-gold text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-opacity-90 transition-all inline-flex items-center space-x-2 animate-pulse-slow"
+                    className="bg-luxury-gold text-white px-6 py-3 rounded-lg font-semibold text-base hover:bg-opacity-90 transition-all inline-flex items-center space-x-2 animate-pulse-slow"
                   >
                     <span>Discover Collection</span>
-                    <ArrowRight size={20} />
+                    <ArrowRight size={18} />
                   </motion.button>
                 </Link>
               </motion.div>
@@ -141,33 +140,34 @@ export default function HomePage() {
 
         <button
           onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm p-3 rounded-full transition-all"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm p-2 rounded-full transition-all"
           aria-label="Previous slide"
         >
-          <ChevronLeft className="text-white" size={24} />
+          <ChevronLeft className="text-white" size={20} />
         </button>
 
         <button
           onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm p-3 rounded-full transition-all"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white bg-opacity-20 hover:bg-opacity-30 backdrop-blur-sm p-2 rounded-full transition-all"
           aria-label="Next slide"
         >
-          <ChevronRight className="text-white" size={24} />
+          <ChevronRight className="text-white" size={20} />
         </button>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
           {heroSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
               className={`w-2 h-2 rounded-full transition-all ${
-                index === currentSlide ? 'bg-luxury-gold w-8' : 'bg-white bg-opacity-50'
+                index === currentSlide ? 'bg-luxury-gold w-6' : 'bg-white bg-opacity-50'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
           ))}
         </div>
       </section>
+      <Ad />
     <FeaturedCollection />
 
 
