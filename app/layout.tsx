@@ -5,6 +5,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Toaster } from 'sonner';
+import Script from 'next/script'; // ✅ Add this import for GA scripts
 
 export const metadata: Metadata = {
   title: 'Heeriya – Luxury Jewelry',
@@ -102,6 +103,25 @@ export default function RootLayout({
             <Toaster position="bottom-right" richColors />
           </CartProvider>
         </AuthProvider>
+        
+        {/* ✅ Google Analytics Scripts – Added before closing </body> */}
+        {/* Note: In Next.js App Router, scripts go in <body> (not <head>), using <Script> for optimization */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+            `,
+          }}
+        />
       </body>
     </html>
   );
