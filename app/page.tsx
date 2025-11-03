@@ -14,17 +14,17 @@ import Ad from "@/components/Ad"
 
 const heroSlides = [
   {
-    image: '/uploads/Product-2.jpg',
+    image: '/uploads/Product-6.jpeg',
     title: 'Elegance Crafted in Every Detail',
     subtitle: 'Discover heirloom jewelry designed to shine for generations.',
   },
   {
-    image: '/uploads/Product-3.jpg',
+    image: '/uploads/Product-7.jpeg',
     title: 'Adorn Your Story with Brilliance',
     subtitle: 'Each gemstone tells a tale of grace, love, and timeless beauty.',
   },
   {
-    image: '/uploads/Product-1.jpg',
+    image: '/uploads/Product-8.jpeg',
     title: 'The Art of Fine Adornment',
     subtitle: 'Handcrafted luxury that celebrates you—inside and out.',
   },
