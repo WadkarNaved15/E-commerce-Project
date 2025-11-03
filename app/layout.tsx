@@ -87,8 +87,6 @@ export const metadata: Metadata = {
   },
 };
 
-console.log(process.env.NEXT_PUBLIC_GA_ID)
-
 export default function RootLayout({
   children,
 }: {
